@@ -1,14 +1,20 @@
+import Flipnote from '@/components/flipnote'
 import getFlipnoteIdsForUser from '@/utils/getFlipnoteIdsForUser'
 
+// Keep consistent with flipnote.tsx
+const USER = 'test'
+
 async function getData() {
-  const ids = await getFlipnoteIdsForUser('test')
+  // TODO: Change this to use DB
+  // For function, will use getFlipnoteIdsForUser if 
+  // user has not been populated into DB yet
+  const ids = await getFlipnoteIdsForUser(USER)
   console.log(ids)
 
   return ids;
 }
 
-const BASE_URL = "https://archive.sudomemo.net/watch/embed"
-
+// TODO: Get fonts from sudomemo site
 export default async function Home() {
   let data; 
   try { 
@@ -27,11 +33,7 @@ export default async function Home() {
         data.map((id, idx) => {
           if (idx > 5) return null;
 
-          return (
-            <iframe key={id} src={`${BASE_URL}/${id}`}
-              scrolling='no' frameBorder={0} height={429} width={512}
-            />
-          )
+          return <Flipnote key={id} id={id} />
         })
       }
     </main>
