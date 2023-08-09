@@ -4,7 +4,7 @@ interface Params {
 
 const queryStringRegex = /(?:[?&])([^?&=]+)(?:=([^&]*))/g;
 
-export function getQueryParameters(url: string) {
+export function getQueryParametersFromUrl(url: string) {
   const params: Params = {};
   let match;
   
@@ -18,5 +18,5 @@ export function getQueryParameters(url: string) {
 }
 
 const exampleUrl = "https://example.com/page?name=John&age=30&occupation=Engineer";
-const exampleQueryParameters = getQueryParameters(exampleUrl);
-console.log(exampleQueryParameters);
+const exampleQueryParameters = getQueryParametersFromUrl(exampleUrl);
+// console.log(exampleQueryParameters);

@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react'
 
-import useWindowIntersection from '@/hooks/useWindowIntersection'
+import useWindowIntersection from '@/app/_hooks/useWindowIntersection'
+import log from '@/app/_utils/log';
 
 const BASE_URL = "https://archive.sudomemo.net/watch/embed"
 
@@ -26,7 +27,10 @@ const Flipnote = ({ id }: { id: string }) => {
       className='p-4 my-4 text-black bg-white border border-black border-solid'
       // open={}
       onToggle={() => {
-        if (!isLoaded) setIsLoaded(true)
+        if (!isLoaded) {
+          setIsLoaded(true)
+          log(`Flipnote ${id} loaded`)
+        }
       }}
     >
       <summary className='text-xl font-bold'>
