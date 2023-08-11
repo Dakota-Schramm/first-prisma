@@ -10,15 +10,14 @@ async function getData() {
 
 export default async function Home() {
   let data = [];
-  try {
+  try { 
     data = await getData()
-    await prisma.$disconnect()
   } catch (error) {
     // This will activate the closest `error.js` Error Boundary
     console.error(error)
-    await prisma.$disconnect()
     throw new Error('Failed to fetch data')
-  }
+  } finally { await prisma.$disconnect() }
+  
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen p-24">

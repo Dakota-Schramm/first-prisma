@@ -1,21 +1,17 @@
 // @ts-ignore
 import { PrismaClient } from '@prisma/client';
 
-import { scrapeUserPage } from '../src/utils/getFlipnoteIdsForUser';
+import { scrapeUserPage } from '../src/app/_lib/getFlipnoteIdsForUser';
+import { userStudioIds } from '@/app/_utils/constants';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const gizmoId = "56650B50CC783E17";
+  const [gizmoId, fredId, epicguitarId] = userStudioIds
+
   const gizmoPage = await scrapeUserPage(gizmoId);
-
-  const fredId = "54B6AF501E13CA73";
   const fredPage = await scrapeUserPage(fredId);
-
-  const epicguitarId = "58A160E02755100C";
   const epicguitarPage = await scrapeUserPage(epicguitarId);
-
-  const anthonyId = "56650B50CC783E17";
   
   const gizmo = await prisma.user.upsert({
     where: { id: gizmoId },
