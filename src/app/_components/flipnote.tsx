@@ -2,13 +2,9 @@
 
 import React, { useState } from 'react'
 
-import useWindowIntersection from '@/app/_hooks/useWindowIntersection'
 import log from '@/app/_utils/log';
 
 const BASE_URL = "https://archive.sudomemo.net/watch/embed"
-
-// Keep consistent with test/page.tsx
-const USER = 'test'
 
 // TODO: Add styles for child elements when details is open
 // TODO: Use postit note design:
@@ -16,50 +12,43 @@ const USER = 'test'
 // Also: not sure if this is the best solution for this:
 // maybe see if can lazy load based on when details is opened
 // for first time
-const Flipnote = ({ id }: { id: string }) => {
-  const [ ref, isVisible ] = useWindowIntersection()
+const Flipnote = ({ id, userName }: { id: string, userName: string }) => {
   const [ isLoaded, setIsLoaded ] = useState(false)
 
-  const FLIPNOTE_VIDEO_SHOWN = isLoaded || !isVisible;
+  // When the details is opened for the first time,
+  // we want to start loading the iframe
+  // Once the iframe is loaded, we can set isLoaded to true
+  
+  
+  function onLoad() {
+    setIsLoaded(true)
+    log(`Flipnote ${id} loaded`)
+  }
 
   return (
     <details
       className='p-4 my-4 text-black bg-white border border-black border-solid'
       // open={}
-      onToggle={() => {
-        if (!isLoaded) {
-          setIsLoaded(true)
-          log(`Flipnote ${id} loaded`)
-        }
-      }}
     >
       <summary className='text-xl font-bold'>
-        Flipnote {id} by {USER}
+        Flipnote {id} by {userName}
       </summary>
-      <section ref={ref}>
-        <FlipnoteVideo id={id} isLoaded={FLIPNOTE_VIDEO_SHOWN} />
-      </section>
+      {!isLoaded && <p>Loading...</p>}
+      <div className='w-80'>
+        <iframe
+          key={id}
+          src={`${BASE_URL}/${id}`}
+          onLoad={onLoad}
+          loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
+          allowFullScreen
+          scrolling='no'
+          frameBorder={0}
+          height={429}
+          width={512} 
+        />
+      </div>
     </details>
   );
 }
-
-function FlipnoteVideo({ id, isLoaded }: { 
-  id: string, isLoaded: boolean 
-}) {
-  if (!isLoaded) return <p>Loading...</p>;
-
-  return (
-    <iframe
-      key={id}
-      src={`${BASE_URL}/${id}`}
-      loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
-      allowFullScreen
-      scrolling='no'
-      frameBorder={0}
-      height={429}
-      width={512} />
-  );
-}
-
 
 export default Flipnote

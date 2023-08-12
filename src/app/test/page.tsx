@@ -1,41 +1,21 @@
-import Flipnote from '@/components/flipnote'
-import getFlipnoteIdsForUser from '@/utils/getFlipnoteIdsForUser'
-
-// Keep consistent with flipnote.tsx
-const USER = 'test'
-
-async function getData() {
-  // TODO: Change this to use DB
-  // For function, will use getFlipnoteIdsForUser if 
-  // user has not been populated into DB yet
-  const ids = await getFlipnoteIdsForUser(USER)
-  console.log(ids)
-
-  return ids;
-}
+import { BulletinBoard } from '../_components/bulletin-board';
 
 // TODO: Get fonts from sudomemo site
 export default async function Home() {
-  let data; 
-  try { 
-    data = await getData()
-  } catch (error) {
-    // This will activate the closest `error.js` Error Boundary
-    console.error(error)
-    throw new Error('Failed to fetch data')
-  }
+  const users = await fetchUsers()
 
-  if (!data) return <main>Test</main>
+  if (!users) throw new Error('Users failed to load')
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen p-24">
-      {
-        data.map((id, idx) => {
-          if (idx > 5) return null;
-
-          return <Flipnote key={id} id={id} />
-        })
-      }
+      <BulletinBoard users={users} />
     </main>
   )
+}
+
+async function fetchUsers() {
+  const res = await fetch(process.env.URL + '/api/users')
+  const data = await res.json()
+
+  return data.users
 }

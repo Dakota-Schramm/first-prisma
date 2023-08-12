@@ -3,6 +3,8 @@ import { Prisma, PrismaClient } from '@prisma/client';
 
 import type { Flipnote } from '@prisma/client';
 
+// TODO: Move most of the methods in this file into API routes
+
 type Headless = "new" | true | false
 
 export const USER_URL = 'https://archive.sudomemo.net/user' // + `/${user.id}` + "@DSi"
@@ -21,22 +23,20 @@ const userInclude = {
 
 type MyPostPayload = Prisma.UserGetPayload<{ include: typeof userInclude }>;
 
-
-export async function getFlipnoteIdsByUserId(userId: string) {
+export async function getUserWithFlipnotes(userId: string) {
   const prisma = new PrismaClient();
   let user: MyPostPayload | null = null;
   if (userId.length !== 16) {
     throw new Error('Invalid user id: length is not 16 characters');
   }
 
-  user = await prisma
-    .user
-    .findUnique({ 
-      where: { id: userId },
-      include: { flipnotes: true },
-    })
-
   try {
+    user = await prisma.user
+      .findUnique({ 
+        where: { id: userId },
+        include: { flipnotes: true },
+      })
+
     if (!user) {
       const scrapedUser = await scrapeUserPage(userId)
       console.log("SU", scrapedUser)
@@ -53,12 +53,12 @@ export async function getFlipnoteIdsByUserId(userId: string) {
         },
         include: { flipnotes: true },
       });
-      console.log("user", user)
-
+    
       if (!user) return null
-      return user.flipnotes.map((flipnote: Flipnote) => flipnote.id)
-    } else {
-      return user.flipnotes.map((flipnote: Flipnote) => flipnote.id)
+    } 
+    return {
+      userName: user.name,
+      flipnotes: user.flipnotes
     }
   } catch (e: any) {
     throw new Error(e.message);
@@ -67,16 +67,38 @@ export async function getFlipnoteIdsByUserId(userId: string) {
   }
 }
 
-// TODO: Maybe finish implementing this method?
-// async function getFlipnoteIdsByUserName(userName: string) {
-//   let user: User | null = null;
-//   user = await prisma
-//     .user
-//     .findUnique({ where: { name: input } })
+// TODO: Convert this to better query only for ids
+export async function getFlipnoteIdsByUserId(userId: string) {
+  const data = await getUserWithFlipnotes(userId);
+  if (data === null) return null
 
-//   if (!user) throw Error('This search method requires a favorited userName')
-//   return user.flipnotes.map(flipnote => flipnote.id)
-// }
+  const flipnotes = data?.flipnotes
+  if (!flipnotes) return []
+  return flipnotes.map(flipnote => flipnote.id)
+}
+
+// unused method
+async function getFlipnoteIdsByUserName(userName: string) {
+  const prisma = new PrismaClient();
+  let user: MyPostPayload | null = null;
+
+  const possibleUsers = await prisma.user
+    .findMany({ 
+      where: { name: userName },
+      include: { flipnotes: true },
+    })
+
+  if (!possibleUsers) return null
+  user = possibleUsers[0]
+
+  await prisma.$disconnect();
+
+  return {
+    userName: user.name,
+    flipnotes: user.flipnotes
+  }
+
+}
 
 export async function scrapeUserPage(userId: string) {
   const browser = await puppeteer.launch({
