@@ -18,7 +18,6 @@ const scale = 2;
 const scaledImage: Picture = {
   width: source.width * scale,
   height: source.height * scale
-
 }
 
 
@@ -49,14 +48,11 @@ const LoadingFrog = ({ image }: LoadingFrogProps) => {
   }, [])
 
   return (
-    <>
-      <canvas className='bg-gray-200 border border-white border-solid'
-        ref={canvasRef}
-        width={scaledImage.width}
-        height={scaledImage.height}
-      />
-      <img src={image.src} width={200} height={200} />
-    </>
+    <canvas className='bg-gray-200 border border-white border-solid'
+      ref={canvasRef}
+      width={scaledImage.width}
+      height={scaledImage.height}
+    />
   )
 }
 

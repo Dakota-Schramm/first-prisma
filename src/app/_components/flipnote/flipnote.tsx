@@ -1,9 +1,11 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 
 import log from '@/app/_utils/log';
-import useWindowIntersection from '../_hooks/useWindowIntersection';
+import useWindowIntersection from '../../_hooks/useWindowIntersection';
+import LoadingFrog from '../loading-frog';
+import frog from './frog.png';
 
 const BASE_URL = "https://archive.sudomemo.net/watch/embed"
 
@@ -21,10 +23,8 @@ const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
 
   useEffect(() => {
     if (!isVisible || !isLast) return
-    console.log("Last is visible")
     handleGetNextFlipnotes()
   }, [isVisible])
-  
 
   return (
     <details
@@ -35,8 +35,8 @@ const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
       <summary className='text-xl font-bold'>
         Flipnote by {userName}
       </summary>
-      {!isLoaded && <p>Loading...</p>}
       <div className='w-[512px] h-[429px]'>
+        { !isLoaded && <LoadScreen /> }
         <iframe
           key={id}
           src={`${BASE_URL}/${id}`}
@@ -54,6 +54,15 @@ const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
       </div>
     </details>
   );
+}
+
+// TODO: Memoize?
+const LoadScreen = () => {
+  return (
+    <section className='flex items-end justify-end w-full h-full'>
+      <LoadingFrog image={frog} />
+    </section> 
+  )
 }
 
 export default Flipnote
