@@ -19,11 +19,6 @@ const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
   const [ isLoaded, setIsLoaded ] = useState(false)
   const [ detailsRef, isVisible ] = useWindowIntersection()
 
-  function onLoad() {
-    setIsLoaded(true)
-    log(`Flipnote ${id} loaded`)
-  }
-
   useEffect(() => {
     if (!isVisible || !isLast) return
     console.log("Last is visible")
@@ -38,14 +33,17 @@ const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
       ref={detailsRef}
     >
       <summary className='text-xl font-bold'>
-        Flipnote {id} by {userName}
+        Flipnote by {userName}
       </summary>
       {!isLoaded && <p>Loading...</p>}
-      <div className='w-80'>
+      <div className='w-[512px] h-[429px]'>
         <iframe
           key={id}
           src={`${BASE_URL}/${id}`}
-          onLoad={onLoad}
+          onLoad={() => {
+            setIsLoaded(true)
+            log(`Flipnote ${id} loaded`)
+          }}
           loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
           allowFullScreen
           scrolling='no'
