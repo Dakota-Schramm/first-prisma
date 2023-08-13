@@ -1,7 +1,7 @@
 import { BulletinBoard } from '../_components/bulletin-board';
 
 // TODO: Get fonts from sudomemo site
-export default async function Home() {
+export default async function Feed() {
   const users = await fetchUsers()
 
   if (!users) throw new Error('Users failed to load')
