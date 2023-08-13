@@ -16,7 +16,6 @@ export async function POST(request: Request,
   let user;
   let flipnotes: Flipnote[] = [];
   let { cursor } = await request.json();
-  cursor = cursor || undefined 
 
   try {
     user  = await prisma.user 
@@ -28,7 +27,7 @@ export async function POST(request: Request,
       where: { userId: user.id },
       skip: 1,
       take: FLIPNOTES_TO_ADD,
-      cursor 
+      cursor: cursor ? { id: cursor } : undefined,
     })
 
     cursor = flipnotesToAdd[flipnotesToAdd.length - 1].id

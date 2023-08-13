@@ -22,9 +22,14 @@ export const useFlipnotes = (
 
   function handleUpdateCursor(cursor) {
     setFlipnoteCursors(
-      (prevCursors) => ({ ...prevCursors, cursor })
+      (prevCursors) => ({ ...prevCursors, ...cursor })
     )
   }
+
+  useEffect(() => {
+    console.log({ "flipnoteCursors": flipnoteCursors })
+  }, [flipnoteCursors])
+  
 
   async function handleGetNextFlipnotes() {
     const flipnoteResponses = users.map(async (user) => {
@@ -43,7 +48,7 @@ export const useFlipnotes = (
         cursor
       } = data
 
-      handleUpdateCursor(cursor)
+      handleUpdateCursor({ [user.id]: cursor })
       return flipnotesToAdd;
     });
 
