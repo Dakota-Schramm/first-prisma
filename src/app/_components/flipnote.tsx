@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import log from '@/app/_utils/log';
+import useWindowIntersection from '../_hooks/useWindowIntersection';
 
 const BASE_URL = "https://archive.sudomemo.net/watch/embed"
 
@@ -12,23 +13,29 @@ const BASE_URL = "https://archive.sudomemo.net/watch/embed"
 // Also: not sure if this is the best solution for this:
 // maybe see if can lazy load based on when details is opened
 // for first time
-const Flipnote = ({ id, userName }: { id: string, userName: string }) => {
+const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
+  { id: string, userName: string, isLast: boolean, handleGetNextFlipnotes: () => void }
+) => {
   const [ isLoaded, setIsLoaded ] = useState(false)
+  const [ detailsRef, isVisible ] = useWindowIntersection()
 
-  // When the details is opened for the first time,
-  // we want to start loading the iframe
-  // Once the iframe is loaded, we can set isLoaded to true
-  
-  
   function onLoad() {
     setIsLoaded(true)
     log(`Flipnote ${id} loaded`)
   }
 
+  useEffect(() => {
+    if (!isVisible || !isLast) return
+    console.log("Last is visible")
+    handleGetNextFlipnotes()
+  }, [isVisible])
+  
+
   return (
     <details
       className='p-4 my-4 text-black bg-white border border-black border-solid'
       // open={}
+      ref={detailsRef}
     >
       <summary className='text-xl font-bold'>
         Flipnote {id} by {userName}

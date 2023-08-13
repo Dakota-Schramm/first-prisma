@@ -31,16 +31,13 @@ export const useFlipnotes = (
       const URL = BATCH_FLIPNOTE_URL(user.id)
       const response = await fetch(URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({ cursor: flipnoteCursors[user.id] }),
       })
 
       if (!response.ok) throw new Error('Could not fetch flipnotes')
       const data = await response.json();
 
-      console.log(data)
       const {
         flipnotes: flipnotesToAdd,
         cursor
@@ -51,7 +48,6 @@ export const useFlipnotes = (
     });
 
     const flipnotes = await Promise.all(flipnoteResponses)
-    console.log(flipnotes)
 
     setFlipnotes(
       (prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]
