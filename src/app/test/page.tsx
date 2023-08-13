@@ -6,7 +6,7 @@ import frog from './frog.png'
 const Test = () => {
   return (
     <main>
-      <LoadingFrog url={frog.src} />
+      <LoadingFrog image={frog} />
     </main>
   )
 }
