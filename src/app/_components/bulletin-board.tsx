@@ -3,8 +3,8 @@
 import { useEffect } from 'react'
 import { User } from '@prisma/client';
 
-import Flipnote from '@/app/_components/flipnote'
-import { useFlipnotes } from '../_hooks/useFlipnotes';
+import Flipnote from '@/components/flipnote'
+import { useFlipnotes } from '@/hooks/useFlipnotes';
 
 export const BulletinBoard = ({ users }: { users: User[] }) => {
   const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(users)

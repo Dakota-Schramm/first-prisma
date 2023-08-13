@@ -1,4 +1,4 @@
-import { BulletinBoard } from '../_components/bulletin-board';
+import { BulletinBoard } from '@/components/bulletin-board';
 
 // TODO: Get fonts from sudomemo site
 export default async function Feed() {
