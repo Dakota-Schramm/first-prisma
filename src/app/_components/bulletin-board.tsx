@@ -15,15 +15,16 @@ export const BulletinBoard = ({ users }: { users: User[] }) => {
 
   return (
     <section className='flex flex-col items-center justify-between min-h-screen p-24'>
-      {flipnotes.map(({ id, userId }, idx) => {
-        const userName = getUserName(users, flipnotes[flipnotes.length - 1].userId)
+      {flipnotes.map(
+        ({ id, userId }, idx) => {
+          const userName = getUserName(users, flipnotes[flipnotes.length - 1].userId)
 
-        return <Flipnote key={id} id={id}
-          userName={getUserName(users, userId)} 
-          isLast={idx === flipnotes.length - 1}
-          { ...{ handleGetNextFlipnotes } }
-          /> 
-      }
+          return <Flipnote key={id} id={id}
+            userName={getUserName(users, userId)} 
+            isLast={idx === flipnotes.length - 1}
+            { ...{ handleGetNextFlipnotes } }
+            /> 
+        }
       )}
     </section>
   );

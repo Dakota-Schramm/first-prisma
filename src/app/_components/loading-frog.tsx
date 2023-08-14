@@ -20,7 +20,6 @@ const scaledImage: Picture = {
   height: source.height * scale
 }
 
-
 const ANIMATION_FRAMES = 8;
 
 type LoadingFrogProps = {
@@ -83,7 +82,8 @@ function drawFrame(
                 frameX, frameY,
                 source.width, source.height, 
                 canvasX, canvasY,
-                scaledImage.width, scaledImage.height);
+                scaledImage.width, scaledImage.height
+              );
 }
 
 function frameStep(
