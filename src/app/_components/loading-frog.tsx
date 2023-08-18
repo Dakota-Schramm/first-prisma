@@ -47,7 +47,7 @@ const LoadingFrog = ({ image }: LoadingFrogProps) => {
   }, [])
 
   return (
-    <canvas className='bg-gray-200 border border-white border-solid'
+    <canvas className='bg-transparent'
       ref={canvasRef}
       width={scaledImage.width}
       height={scaledImage.height}

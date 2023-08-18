@@ -1,8 +1,6 @@
 import puppeteer from 'puppeteer';
 import { Prisma, PrismaClient } from '@prisma/client';
 
-import type { Flipnote } from '@prisma/client';
-
 // TODO: Move most of the methods in this file into API routes
 
 type Headless = "new" | true | false
@@ -21,7 +19,9 @@ const userInclude = {
   },
 } satisfies Prisma.UserInclude
 
-type MyPostPayload = Prisma.UserGetPayload<{ include: typeof userInclude }>;
+type MyPostPayload = Prisma.UserGetPayload<
+  { include: typeof userInclude }
+>;
 
 export async function getUserWithFlipnotes(userId: string) {
   const prisma = new PrismaClient();

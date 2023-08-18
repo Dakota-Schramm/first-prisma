@@ -15,6 +15,10 @@ const BASE_URL = "https://archive.sudomemo.net/watch/embed"
 // Also: not sure if this is the best solution for this:
 // maybe see if can lazy load based on when details is opened
 // for first time
+// TODO: Fix loading issue on throttled version --
+// Doesn't stay on loading screen for full time 
+// its loading -- instead, shows iframe with its own
+// respective loading animation
 const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
   { id: string, userName: string, isLast: boolean, handleGetNextFlipnotes: () => void }
 ) => {
