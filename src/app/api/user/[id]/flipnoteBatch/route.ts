@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { Prisma, PrismaClient, Flipnote } from '@prisma/client';
+import { User, Flipnote } from '@prisma/client';
+
+import { prisma } from '@/app/_server/db';
 
 const FLIPNOTES_TO_ADD = 3
 
@@ -12,8 +14,9 @@ type FlipnoteCursors = {
 export async function POST(request: Request, 
   { params: { id } }: { params: { id: string } }
 ) {
-  const prisma = new PrismaClient();
-  let user;
+  if (id.length !== 16) return NextResponse.error()
+
+  let user: User;
   let flipnotes: Flipnote[] = [];
   let { cursor } = await request.json();
 

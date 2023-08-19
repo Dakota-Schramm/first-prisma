@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma  } from '@prisma/client';
+import { prisma } from '@/app/_server/db';
 
 // TODO: Move most of the methods in this file into API routes
 
@@ -24,7 +25,6 @@ type MyPostPayload = Prisma.UserGetPayload<
 >;
 
 export async function getUserWithFlipnotes(userId: string) {
-  const prisma = new PrismaClient();
   let user: MyPostPayload | null = null;
   if (userId.length !== 16) {
     throw new Error('Invalid user id: length is not 16 characters');
@@ -79,7 +79,6 @@ export async function getFlipnoteIdsByUserId(userId: string) {
 
 // unused method
 async function getFlipnoteIdsByUserName(userName: string) {
-  const prisma = new PrismaClient();
   let user: MyPostPayload | null = null;
 
   const possibleUsers = await prisma.user
