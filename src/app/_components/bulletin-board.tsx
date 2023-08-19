@@ -22,7 +22,7 @@ export const BulletinBoard = ({ users }: { users: User[] }) => {
           return <Flipnote key={id} id={id}
             userName={getUserName(users, userId)} 
             isLast={idx === flipnotes.length - 1}
-            { ...{ handleGetNextFlipnotes } }
+            { ...{ userId, handleGetNextFlipnotes } }
             /> 
         }
       )}

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link'
 
 import log from '@/app/_utils/log';
 import useWindowIntersection from '../../_hooks/useWindowIntersection';
@@ -8,6 +9,14 @@ import LoadingFrog from '../loading-frog';
 import frog from './frog.png';
 
 const BASE_URL = "https://archive.sudomemo.net/watch/embed"
+
+type FlipnoteProps = {
+  id: string
+  userId: string
+  userName: string
+  isLast: boolean
+  handleGetNextFlipnotes: () => void
+}
 
 // TODO: Add styles for child elements when details is open
 // TODO: Use postit note design:
@@ -19,9 +28,13 @@ const BASE_URL = "https://archive.sudomemo.net/watch/embed"
 // Doesn't stay on loading screen for full time 
 // its loading -- instead, shows iframe with its own
 // respective loading animation
-const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
-  { id: string, userName: string, isLast: boolean, handleGetNextFlipnotes: () => void }
-) => {
+const Flipnote = ({
+  id,
+  userId,
+  userName,
+  isLast,
+  handleGetNextFlipnotes
+}: FlipnoteProps) => {
   const [ isLoaded, setIsLoaded ] = useState(false)
   const [ detailsRef, isVisible ] = useWindowIntersection()
 
@@ -37,23 +50,26 @@ const Flipnote = ({ id, userName, isLast, handleGetNextFlipnotes }:
       ref={detailsRef}
     >
       <summary className='text-xl font-bold'>
-        Flipnote by {userName}
+        Flipnote by{' '}
+        <Link href={`/user/${userId}`} className='underline hover:text-main-offline'>
+          {userName}
+        </Link>
       </summary>
       <div className='w-[512px] h-[429px]'>
-        { !isLoaded && <LoadScreen /> }
+        {!isLoaded && <LoadScreen />}
         <iframe
           key={id}
           src={`${BASE_URL}/${id}`}
           onLoad={() => {
-            setIsLoaded(true)
-            log(`Flipnote ${id} loaded`)
+            setIsLoaded(true);
+            log(`Flipnote ${id} loaded`);
           }}
           loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
           allowFullScreen
           scrolling='no'
           frameBorder={0}
           height={429}
-          width={512} 
+          width={512}
         />
       </div>
     </details>
