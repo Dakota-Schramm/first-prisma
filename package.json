@@ -9,9 +9,10 @@
     "lint": "next lint"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} --transpile-only prisma/seed.ts"
+    "seed": "ts-node --transpile-only prisma/seed.ts"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.17",
     "@prisma/client": "5.1.0",
     "@types/node": "^20.4.5",
     "@types/react": "18.2.18",

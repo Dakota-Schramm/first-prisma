@@ -2,7 +2,7 @@
 import { PrismaClient } from '@prisma/client';
 
 import { scrapeUserPage } from '../src/app/_lib/getFlipnoteIdsForUser';
-import { userStudioIds } from '@/app/_utils/constants';
+import { userStudioIds } from '../src/app/_utils/constants';
 
 const prisma = new PrismaClient();
 
