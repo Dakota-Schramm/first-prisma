@@ -57,7 +57,11 @@ const Flipnote = ({
       open={isOpen}
       onToggle={() => setIsOpen(!isOpen)}
     >
-      <summary className='text-xl font-bold'>
+      <summary className={classNames(
+        'text-xl font-bold',
+        { 'p-0': !isOpen },
+        { 'p-4': isOpen }
+      )}>
         Flipnote by{' '}
         <Link
           href={`/user/${userId}`}
