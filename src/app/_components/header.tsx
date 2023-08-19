@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 const Header = (
-  { children }: { children: React.ReactNode }
+  { links, children }: { links: ReactNode, children: ReactNode }
 ) => {
   return (
-    <header className='fixed top-0 flex items-center justify-end w-full h-20 px-4 text-black bg-white'>
-      Flipnote -- Legacy Viewer
+    <header className='fixed top-0 flex items-center justify-between w-full h-20 px-4 text-black bg-white'>
+      <div className="flex space-x-2">
+        <h1>Flipnote -- Legacy Viewer</h1>
+        { links }
+      </div>
       { children }
     </header>
-  )
+  );
 }
 
 export default Header
