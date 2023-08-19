@@ -6,3 +6,5 @@ export const userStudioIds = [
   "58A160E02755100C", // epicguitar
   "56650B50CC783E17" // Anthony
 ]
+
+export const IFRAME_BASE_URL = 'https://archive.sudomemo.net/watch/embed'; 

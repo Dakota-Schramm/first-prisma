@@ -9,7 +9,7 @@ import LoadingFrog from '../loading-frog';
 import frog from './frog.png';
 import classNames from 'classnames';
 
-const BASE_URL = "https://archive.sudomemo.net/watch/embed"
+import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 
 type FlipnoteProps = {
   id: string
