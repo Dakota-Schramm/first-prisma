@@ -1,3 +1,9 @@
+// Flipnote font
+// https://en.fontworks.co.jp/fontsearch/PopHappinessStd-EB/?word=FlipnoteRemixed
+
+// OT-Seurat Pro - Main UI font, available from Adobe Typekit.
+// FOT-Rodin Pro - Secondary UI font, also available from Adobe Typekit.
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -12,6 +18,9 @@ module.exports = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      colors: {
+        'main-online': '#71ba00'
+      }
     },
   },
   plugins: [],
