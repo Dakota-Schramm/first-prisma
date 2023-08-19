@@ -43,10 +43,7 @@ export const useFlipnotes = (
       if (!response.ok) throw new Error('Could not fetch flipnotes')
       const data = await response.json();
 
-      const {
-        flipnotes: flipnotesToAdd,
-        cursor
-      } = data
+      const { flipnotes: flipnotesToAdd, cursor } = data
 
       handleUpdateCursor({ [user.id]: cursor })
       return flipnotesToAdd;
