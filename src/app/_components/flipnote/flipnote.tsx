@@ -7,6 +7,7 @@ import log from '@/app/_utils/log';
 import useWindowIntersection from '../../_hooks/useWindowIntersection';
 import LoadingFrog from '../loading-frog';
 import frog from './frog.png';
+import classNames from 'classnames';
 
 const BASE_URL = "https://archive.sudomemo.net/watch/embed"
 
@@ -35,6 +36,7 @@ const Flipnote = ({
   isLast,
   handleGetNextFlipnotes
 }: FlipnoteProps) => {
+  const [ isOpen, setIsOpen ] = useState(false)
   const [ isLoaded, setIsLoaded ] = useState(false)
   const [ detailsRef, isVisible ] = useWindowIntersection()
 
@@ -45,17 +47,26 @@ const Flipnote = ({
 
   return (
     <details
-      className='p-4 my-4 text-black bg-white border border-black border-solid'
-      // open={}
       ref={detailsRef}
+      className={classNames(
+        'my-4 text-black bg-white border border-black border-solid w-[512px] h-full flex flex-col items-center justify-center',
+        { 'p-0': isOpen },
+        { 'p-4': !isOpen }
+
+      )}
+      open={isOpen}
+      onToggle={() => setIsOpen(!isOpen)}
     >
       <summary className='text-xl font-bold'>
         Flipnote by{' '}
-        <Link href={`/user/${userId}`} className='underline hover:text-main-offline'>
+        <Link
+          href={`/user/${userId}`}
+          className='underline hover:text-main-offline'
+        >
           {userName}
         </Link>
       </summary>
-      <div className='w-[512px] h-[429px]'>
+      <div>
         {!isLoaded && <LoadScreen />}
         <iframe
           key={id}
