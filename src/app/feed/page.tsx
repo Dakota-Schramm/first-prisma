@@ -20,7 +20,7 @@ export default async function Feed() {
   if (!users) throw new Error('Users failed to load')
 
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen p-24 backdrop:bg-blue bg-main-online">
+    <main className="flex flex-col items-center justify-between min-h-screen p-24 ">
       <BulletinBoard users={users} />
     </main>
   )
