@@ -25,3 +25,8 @@ body {
     )
     rgb(var(--background-start-rgb));
 } */
+
+@font-face {
+  font-family: 'PopHappinessStd-EB';
+  src:  url('_assets/FOT-PopHappinessStd-EB.otf') format('opentype')
+}

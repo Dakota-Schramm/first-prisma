@@ -16,6 +16,9 @@ module.exports = {
       colors: {
         'main-online': '#71ba00',
         'main-offline': '#ff6f1c',
+      },
+      fontFamily: {
+        pop: ['PopHappinessStd-EB', 'sans-serif'],
       }
     },
   },

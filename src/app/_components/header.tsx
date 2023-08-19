@@ -6,7 +6,7 @@ const Header = (
   return (
     <header className='fixed top-0 flex items-center justify-between w-full h-20 px-4 text-black bg-white'>
       <div className="flex space-x-2">
-        <h1>Flipnote -- Legacy Viewer</h1>
+        <h1 className='text-xl font-bold font-pop text-main-offline'>Flipnote -- Legacy Viewer</h1>
         { links }
       </div>
       { children }
