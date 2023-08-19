@@ -5,7 +5,7 @@ import frog from '@/app/_components/flipnote/frog.png';
 
 const Test = () => {
   return (
-    <main>
+    <main className='bg-white'>
       <LoadingFrog image={frog} />
     </main>
   )
