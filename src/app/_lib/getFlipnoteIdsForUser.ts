@@ -118,6 +118,24 @@ export async function scrapeUserPage(userId: string) {
 
     return userName ?? '';
   });
+  const pageStarCounts = await page.evaluate(() => {
+    const starContainer = document
+      .querySelector('.UserDetails__stars')
+    if (!starContainer) return 1 
+
+    const starElements = starContainer
+      ?.querySelectorAll('.Star')
+    if (!starElements || starElements.length === 0) return 2 
+
+    const starCounts = Array.from(starElements)
+      .map((c, idx) => c
+        .lastChild!
+        .getAttribute('title')
+      )
+
+    return starCounts ?? 3;
+  })
+
   const pageCounterSelector = '.Pagination__counter'
   let pageProgress = await page.evaluate((selector) => {
     function parse(str: string) {
@@ -174,7 +192,7 @@ export async function scrapeUserPage(userId: string) {
   return {
     id: userId,
     name: pageUserName,
-    flipnoteTotal: flipnoteIds.length,
-    flipnoteIds: flipnoteIds 
+    flipnoteIds: flipnoteIds,
+    stars: pageStarCounts,
   }
 }
