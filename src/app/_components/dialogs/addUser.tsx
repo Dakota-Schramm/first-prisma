@@ -1,6 +1,9 @@
 'use client'
 
 import React, { useState, forwardRef, RefObject } from 'react'
+import Image from 'next/image';
+
+import sync from "@/assets/images/sync.svg"
 
 type AddUserProps = {
   handleClose: () => void
@@ -47,12 +50,17 @@ const AddUser = forwardRef(
   );
 })
 
-// TODO: Add loading animation during post
-const FooterButtons = ({ handleClose }) => {
+const UserForm = ({ handleSubmitted }: { handleSubmitted: () => void }) => {
   const [ input, setInput ] = useState('')
-  const [ isSubmitted, setIsSubmitted ] = useState(false)
+  const [ isLoading, setIsLoading ] = useState(false)
 
-  if (!isSubmitted) return (
+  if (isLoading) return (
+    <div className='flex items-center justify-center w-full h-full'>
+      <Image src={sync} alt='Loading' className="animate-spin" />
+    </div>
+  )
+
+  return (
     <form
       className='flex'
     >
@@ -66,15 +74,26 @@ const FooterButtons = ({ handleClose }) => {
         type='submit'
         onClick={async (e) => {
           e.preventDefault()
-          console.log(input)
+          setIsLoading(true)
           const response = await fetch(`/api/user/${input}`)
+          setIsLoading(false)
           if (!response.ok) throw Error(response.statusText)
-          setIsSubmitted(true)
+          handleSubmitted()
         }}
       >
         Submit
       </button>
     </form>
+
+  )
+}
+
+// TODO: Add loading animation during post
+const FooterButtons = ({ handleClose }) => {
+  const [ isSubmitted, setIsSubmitted ] = useState(false)
+
+  if (!isSubmitted) return (
+    <UserForm handleSubmitted={() => setIsSubmitted(true)} />
   )
 
   // TODO: Reload page after post?
