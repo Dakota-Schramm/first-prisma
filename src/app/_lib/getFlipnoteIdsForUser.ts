@@ -57,7 +57,8 @@ export async function getUserWithFlipnotes(userId: string) {
       if (!user) return null
     } 
     return {
-      userName: user.name,
+      id:        user.id,
+      userName:  user.name,
       flipnotes: user.flipnotes
     }
   } catch (e: any) {
