@@ -46,7 +46,7 @@ const UserProfile = async ({ params }: UserProfileProps) => {
 
   return (
     <main className='w-full h-full px-16 pt-24'>
-      <UserHeader id={params.id} userName={user.userName} />
+      <UserHeader id={params.id} userName={user.name} />
       <Portfolio {...{ user }} />
     </main>
   )
