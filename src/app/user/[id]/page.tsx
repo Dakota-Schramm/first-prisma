@@ -5,20 +5,34 @@ import { prisma } from '@/app/_server/db';
 
 // TODO: Fix so that flipnotes not fetched initially?
 // TODO: Move behavior into route
-const fetchUser = async (id: string) => {
+const fetchProfile = async (id: string) => {
   const user = await prisma.user
     .findUnique({ where: { id } })
 
+  const flipnoteCount = await prisma.flipnote.aggregate({
+    _count: true,
+    where: { userId: id }
+  })
+
   if (!user) throw new Error('Failed to load user')
 
-  return user
+  return {
+    user,
+    flipnoteCount: flipnoteCount._count
+  }
 }
 
 type UserProfileProps = {
   params: { id: string }
 }
 
-const UserHeader = ({ id, userName }: { id: string, userName: string }) => {
+type UserHeaderProps = {
+  id: string;
+  userName: string;
+  flipnoteCount: number
+};
+
+const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
   return (
     <header className='flex flex-col w-full border-4 border-solid rounded-lg border-gray-50'>
       <div className='flex items-start p-4 space-x-2 bg-main-online'>
@@ -29,10 +43,13 @@ const UserHeader = ({ id, userName }: { id: string, userName: string }) => {
         </h1>
         <h2 className='italic font-semibold opacity-50'>{`Studio ID: ${id}`}</h2>
       </div>
-      <div className='p-4 bg-white'>
+      <div className='flex justify-between w-full p-4 bg-white'>
         <div className='space-x-2'>
           <button className='text-main-offline'>Grid View</button>
           <button>Full Screen View</button>
+        </div>
+        <div>
+          <p className='text-main-offline'>{`${flipnoteCount} Flipnotes`}</p>
         </div>
       </div>
     </header>
@@ -41,12 +58,15 @@ const UserHeader = ({ id, userName }: { id: string, userName: string }) => {
 }
 
 const UserProfile = async ({ params }: UserProfileProps) => {
-  const user = await fetchUser(params.id)
+  const {
+    user,
+    flipnoteCount
+  } = await fetchProfile(params.id)
   console.log(user)
 
   return (
     <main className='w-full h-full px-16 pt-24'>
-      <UserHeader id={params.id} userName={user.name} />
+      <UserHeader id={params.id} userName={user.name} flipnoteCount={flipnoteCount} />
       <Portfolio {...{ user }} />
     </main>
   )
