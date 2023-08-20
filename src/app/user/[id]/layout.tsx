@@ -10,14 +10,14 @@ const Layout = (
     <>
       <Header
         links={
-          <nav>
-            <Link href="/">Home</Link>
-            <Link href="/feed">Feed</Link>
+          <nav className='space-x-2'>
+            <Link href='/'>Home</Link>
+            <span>{'|'}</span>
+            <Link href='/feed'>Feed</Link>
           </nav>
-        }>
-          <button>
-            Favorite User
-          </button>
+        }
+      >
+        <button>Favorite User</button>
       </Header>
       {children}
     </>
