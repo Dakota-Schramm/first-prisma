@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { User } from '@prisma/client'
 
-const BATCH_FLIPNOTE_URL = (id) => `/api/user/${id}/flipnoteBatch`
+const BATCH_FLIPNOTE_URL = (id: string) => `/api/user/${id}/flipnoteBatch`
 
 export const useFlipnotes = (
   users: User[] = [],
