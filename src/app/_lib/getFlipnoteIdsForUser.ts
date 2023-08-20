@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import { Prisma  } from '@prisma/client';
-import { prisma } from '@/app/_server/db';
+import { prisma } from '../_server/db'; // Partial import to allow for seed script
 
 // TODO: Move most of the methods in this file into API routes
 
