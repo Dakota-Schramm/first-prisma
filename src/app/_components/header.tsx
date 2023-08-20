@@ -1,15 +1,18 @@
 import React, { ReactNode } from 'react'
+import Link from 'next/link';
 
 const Header = (
   { links, children }: { links: ReactNode, children: ReactNode }
 ) => {
   return (
     <header className='fixed top-0 flex items-center justify-between w-full h-20 px-4 text-black bg-white'>
-      <div className="flex space-x-2">
-        <h1 className='text-xl font-bold font-pop text-main-offline'>Flipnote -- Legacy Viewer</h1>
-        { links }
+      <div className='flex space-x-2'>
+        <h1 className='text-xl font-bold font-pop text-main-offline'>
+          <Link href="/feed">Flipnote -- Legacy Viewer</Link>
+        </h1>
+        {links}
       </div>
-      { children }
+      {children}
     </header>
   );
 }
