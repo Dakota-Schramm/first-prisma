@@ -11,6 +11,30 @@ import frog from './frog.png';
 
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 
+const FlipnoteContent = ({ id }) => {
+  const [ isLoaded, setIsLoaded ] = useState(false)
+
+  return (
+    <div className='relative'>
+      {!isLoaded && <LoadScreen />}
+      <iframe
+        key={id}
+        src={`${BASE_URL}/${id}`}
+        onLoad={() => {
+          setIsLoaded(true);
+          log(`Flipnote ${id} loaded`);
+        }}
+        loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
+        allowFullScreen
+        scrolling='no'
+        frameBorder={0}
+        height={429}
+        width={512}
+      />
+    </div>
+  )
+}
+
 type FlipnoteProps = {
   id: string
   userId: string
@@ -37,7 +61,6 @@ const Flipnote = ({
   handleGetNextFlipnotes
 }: FlipnoteProps) => {
   const [ isOpen, setIsOpen ] = useState(false)
-  const [ isLoaded, setIsLoaded ] = useState(false)
   const [ detailsRef, isVisible ] = useWindowIntersection()
 
   useEffect(() => {
@@ -70,23 +93,7 @@ const Flipnote = ({
           {userName}
         </Link>
       </summary>
-      <div>
-        {!isLoaded && <LoadScreen />}
-        <iframe
-          key={id}
-          src={`${BASE_URL}/${id}`}
-          onLoad={() => {
-            setIsLoaded(true);
-            log(`Flipnote ${id} loaded`);
-          }}
-          loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
-          allowFullScreen
-          scrolling='no'
-          frameBorder={0}
-          height={429}
-          width={512}
-        />
-      </div>
+      <FlipnoteContent {...{ id }} />
     </details>
   );
 }
@@ -95,9 +102,9 @@ const Flipnote = ({
 // TODO: Fix styling so that loading from is in bottom right
 const LoadScreen = () => {
   return (
-    <section className='flex items-end justify-end w-full h-full'>
+    <div className='absolute bottom-2 right-2'>
       <LoadingFrog image={frog} />
-    </section> 
+    </div> 
   )
 }
 
