@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react'
 import Image from 'next/image';
 
 import Header from '@/app/_components/header';
-import plus from './plus.svg'
+import plus from '@/assets/images/plus.svg'
 import AddUser from '@/components/dialogs/addUser';
 
 // TODO: Add framer for animations
