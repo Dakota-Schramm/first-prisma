@@ -13,7 +13,6 @@ const HEADLESS_ENABLED: Headless = "new";
 const userInclude = {
   id: true,
   name: true,
-  flipnoteTotal: true,
   flipnotes: {
     id: true,
     userId: false 
@@ -44,7 +43,6 @@ export async function getUserWithFlipnotes(userId: string) {
         data: {
           id: scrapedUser.id,
           name: scrapedUser.name,
-          flipnoteTotal: scrapedUser.flipnoteTotal, // TODO: See https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#relation-count
           flipnotes: {
             createMany: {
               data: scrapedUser.flipnoteIds.map((id) => ( { id })),

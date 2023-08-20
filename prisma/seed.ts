@@ -38,7 +38,6 @@ async function upsertUser(userId: string) {
     create: {
       id: page.id,
       name: page.name,
-      flipnoteTotal: page.flipnoteTotal,
       flipnotes: {
         create: page.flipnoteIds.map(id => ({ id }))
       }
