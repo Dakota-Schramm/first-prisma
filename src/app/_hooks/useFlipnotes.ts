@@ -26,11 +26,6 @@ export const useFlipnotes = (
     )
   }
 
-  useEffect(() => {
-    console.log({ "flipnoteCursors": flipnoteCursors })
-  }, [flipnoteCursors])
-  
-
   async function handleGetNextFlipnotes() {
     const flipnoteResponses = users.map(async (user) => {
       const URL = BATCH_FLIPNOTE_URL(user.id)

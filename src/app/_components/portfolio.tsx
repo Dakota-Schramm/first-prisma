@@ -38,7 +38,7 @@ const Portfolio = ({ user }: { user: User }) => {
   // TODO: Remove margin from element in last column
   return (
     <>
-      <section className='grid items-center grid-cols-3 row-span-2'>
+      <section className='grid items-center justify-center grid-cols-3 gap-4 p-4'>
         { flipnotes.map(
           (f) => {
             const { id } = f
