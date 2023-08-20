@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
 import Link from 'next/link'
+import React, { useEffect, useState } from 'react';
 
 import log from '@/app/_utils/log';
-import useWindowIntersection from '../../_hooks/useWindowIntersection';
+import useWindowIntersection from '@/hooks/useWindowIntersection';
 import LoadingFrog from '../loading-frog';
 import frog from './frog.png';
-import classNames from 'classnames';
 
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 
@@ -92,6 +92,7 @@ const Flipnote = ({
 }
 
 // TODO: Memoize?
+// TODO: Fix styling so that loading from is in bottom right
 const LoadScreen = () => {
   return (
     <section className='flex items-end justify-end w-full h-full'>
