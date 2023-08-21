@@ -1,11 +1,16 @@
 import Link from 'next/link';
 
 import Header from '@/app/_components/header';
+import AddUserButton from './addUser';
 
 // TODO: Add framer for animations
-const Layout = (
-  { children }: { children: React.ReactNode }
-) => {
+const Layout = ({
+  params,
+  children,
+}: {
+  params: any;
+  children: React.ReactNode;
+}) => {
   return (
     <>
       <Header
@@ -17,11 +22,11 @@ const Layout = (
           </nav>
         }
       >
-        <button>Favorite User</button>
+        <AddUserButton id={params.id} />
       </Header>
       {children}
     </>
   );
-}
+};
 
 export default Layout
