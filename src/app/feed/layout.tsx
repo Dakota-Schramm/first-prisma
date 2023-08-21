@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Header from '@/app/_components/header';
 import plus from '@/assets/images/plus.svg'
 import AddUser from '@/components/dialogs/addUser';
+import log from '../_utils/log';
 
 // TODO: Add framer for animations
 const Layout = (
@@ -17,13 +18,13 @@ const Layout = (
     const node = addUser.current!
     if (node) {
       node.showModal()
-      console.log("Open: ", node.open)
+      log("Open: ", node.open)
     }
   }
 
   function handleClose() {
     const node = addUser.current!
-    console.log('closing')
+    log('closing')
     if (node) node.close()
   }
 
