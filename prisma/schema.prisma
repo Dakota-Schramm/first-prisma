@@ -21,3 +21,11 @@ model Flipnote {
   user      User      @relation(fields: [userId], references: [id])
   userId    String 
 }
+
+model StarCount {
+  id            Int       @id @default(autoincrement())
+  type          String
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  count         Int
+}

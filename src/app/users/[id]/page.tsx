@@ -68,8 +68,13 @@ const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
           <button className='text-main-offline'>Grid View</button>
           <button>Full Screen View</button>
         </div>
-        <div>
+        <div className='flex'>
           <p className='text-main-offline'>{`${flipnoteCount} Flipnotes`}</p>
+          <ul>
+            {}
+            
+          </ul>
+
         </div>
       </div>
     </header>
