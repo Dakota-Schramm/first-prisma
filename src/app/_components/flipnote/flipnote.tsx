@@ -11,6 +11,7 @@ import frog from './frog.png';
 
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 
+// TODO: Fix error here where flipnotes don't lazy load
 const FlipnoteContent = ({ id }) => {
   const [ isLoaded, setIsLoaded ] = useState(false)
 
