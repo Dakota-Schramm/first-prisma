@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { storageAvailable } from '@/app/_lib/storageAvailable';
 import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
@@ -10,15 +10,25 @@ type AddUserButtonProps = {
 };
 
 const AddUserButton = ({ id }: AddUserButtonProps) => {
-  const favorited = getFavoriteStatus(id);
+  const [favorited, setFavorited] = useState(false);
+
+  useEffect(() => {
+    setFavorited(getFavoriteStatus(id));
+  }, []);
+
   return (
-    <button onClick={() => addUserToFavorites(id)}>
+    <button
+      onClick={() => {
+        toggleUserFavorite(id);
+        setFavorited((f) => !f);
+      }}
+    >
       {favorited ? 'Favorited <3' : 'Favorite User'}
     </button>
   );
 };
 
-function addUserToFavorites(id: string) {
+function toggleUserFavorite(id: string) {
   if (!storageAvailable('localStorage')) return;
 
   const favoritesJsonString = localStorage.getItem('favorites');
@@ -29,7 +39,9 @@ function addUserToFavorites(id: string) {
     const data = res.data;
     favorites = data;
   }
-  favorites.push(id);
+  if (favorites.includes(id)) {
+    favorites = favorites.filter((favId) => favId !== id);
+  } else favorites.push(id);
 
   console.log('favorites: ', favorites);
   localStorage.setItem('favorites', JSON.stringify({ data: favorites }));
