@@ -6,30 +6,27 @@ import { prisma } from '@/app/_server/db';
 // TODO: Fix so that flipnotes not fetched initially?
 // TODO: Move behavior into route
 const fetchProfile = async (id: string) => {
-  const user = await prisma.user
-    .findUnique({ where: { id } })
+  const user = await prisma.user.findUnique({ where: { id } });
 
   const flipnoteCount = await prisma.flipnote.aggregate({
     _count: true,
-    where: { userId: id }
-  })
-
-  if (!user) throw new Error('Failed to load user')
+    where: { userId: id },
+  });
 
   return {
     user,
-    flipnoteCount: flipnoteCount._count
-  }
-}
+    flipnoteCount: flipnoteCount?._count,
+  };
+};
 
 type UserProfileProps = {
-  params: { id: string }
-}
+  params: { id: string };
+};
 
 type UserHeaderProps = {
   id: string;
   userName: string;
-  flipnoteCount: number
+  flipnoteCount: number;
 };
 
 const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
@@ -54,22 +51,22 @@ const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
       </div>
     </header>
   );
-  
-}
+};
 
 const UserProfile = async ({ params }: UserProfileProps) => {
-  const {
-    user,
-    flipnoteCount
-  } = await fetchProfile(params.id)
-  console.log(user)
+  const { id } = params;
+  const { user, flipnoteCount } = await fetchProfile(id);
+
+  if (!user) throw new Error('Failed to load user');
+
+  console.log(user);
 
   return (
     <main className='w-full h-full px-16 pt-24'>
-      <UserHeader id={params.id} userName={user.name} flipnoteCount={flipnoteCount} />
+      <UserHeader userName={user.name} {...{ id, flipnoteCount }} />
       <Portfolio {...{ user }} />
     </main>
-  )
-}
+  );
+};
 
 export default UserProfile 

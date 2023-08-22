@@ -11,6 +11,7 @@ const Layout = ({
   params: any;
   children: React.ReactNode;
 }) => {
+  const { id } = params;
   return (
     <>
       <Header
@@ -22,7 +23,7 @@ const Layout = ({
           </nav>
         }
       >
-        <AddUserButton id={params.id} />
+        <AddUserButton id={id} />
       </Header>
       {children}
     </>

@@ -3,9 +3,19 @@
 import React from 'react';
 
 import { storageAvailable } from '@/app/_lib/storageAvailable';
+import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
 
-const AddUserButton = ({ id }: { id: string }) => {
-  return <button onClick={() => addUserToFavorites(id)}>Favorite User</button>;
+type AddUserButtonProps = {
+  id: string;
+};
+
+const AddUserButton = ({ id }: AddUserButtonProps) => {
+  const favorited = getFavoriteStatus(id);
+  return (
+    <button onClick={() => addUserToFavorites(id)}>
+      {favorited ? 'Favorited <3' : 'Favorite User'}
+    </button>
+  );
 };
 
 function addUserToFavorites(id: string) {
@@ -22,7 +32,13 @@ function addUserToFavorites(id: string) {
   favorites.push(id);
 
   console.log('favorites: ', favorites);
-  localStorage.setItem('favorites', JSON.stringify(favorites));
+  localStorage.setItem('favorites', JSON.stringify({ data: favorites }));
 }
+
+function getFavoriteStatus(id: string): boolean {
+  const favorites = deserializeFavorites();
+  return favorites?.includes(id) ?? false;
+}
+
 
 export default AddUserButton;
