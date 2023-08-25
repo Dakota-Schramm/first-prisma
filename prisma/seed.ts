@@ -31,16 +31,28 @@ async function upsertUser(userId: string) {
   const page = await scrapeUserPage(userId);
 
   const newUser = await prisma.user.upsert({
+    include: { flipnotes: true, starCounts: true },
     where: { id: userId },
     update: {},
     create: {
       id: page.id,
       name: page.name,
       flipnotes: {
-        create: page.flipnoteIds.map(id => ({ id }))
-      }
-    }
+        create: page.flipnoteIds.map((id) => ({ id })),
+      },
+      starCounts: {
+        create: ['yellow', 'green', 'red', 'blue', 'purple'].map((c, idx) => ({
+          type: c,
+          count: page.stars[idx],
+        })),
+      },
+    },
   });
 
-  return newUser
+  return {
+    id: newUser.id,
+    name: newUser.name,
+    flipnotes: newUser.flipnotes.length,
+    starCounts: newUser.starCounts.map((sc) => sc.count),
+  };
 }

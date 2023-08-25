@@ -1,14 +1,19 @@
 import React from 'react'
 import { Metadata } from 'next';
+import { StarCounts } from '@prisma/client';
 
 import Portfolio from '@/app/_components/portfolio';
 import { prisma } from '@/app/api/db';
 import { SiteTitle } from '@/app/_utils/constants';
+import log from '@/app/_utils/log';
 
 // TODO: Fix so that flipnotes not fetched initially?
 // TODO: Move behavior into route
 const fetchProfile = async (id: string) => {
-  const user = await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: { starCounts: true },
+  });
 
   const flipnoteCount = await prisma.flipnote.aggregate({
     _count: true,
@@ -50,9 +55,16 @@ type UserHeaderProps = {
   id: string;
   userName: string;
   flipnoteCount: number;
+  starCounts: StarCounts[];
 };
 
-const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
+const UserHeader = ({
+  id,
+  userName,
+  flipnoteCount,
+  starCounts,
+}: UserHeaderProps) => {
+  console.log(starCounts);
   return (
     <header className='flex flex-col w-full border-4 border-solid rounded-lg border-gray-50'>
       <div className='flex items-start p-4 space-x-2 bg-main-online'>
@@ -68,9 +80,19 @@ const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
           <button className='text-main-offline'>Grid View</button>
           <button>Full Screen View</button>
         </div>
-        <div className='flex'>
-          <p className='text-main-offline'>{`${flipnoteCount} Flipnotes`}</p>
-          <ul>{}</ul>
+        <div className='flex divide-x-2'>
+          <p className='pr-2 text-main-offline'>{`${flipnoteCount} Flipnotes`}</p>
+          <ul className='flex pl-2 space-x-2'>
+            {starCounts.map((sc) => (
+              <li key={sc.id}>
+                <span className='text-main-offline'>{`${capitalize(
+                  sc.type
+                )}`}</span>
+                {': '}
+                {sc.count}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </header>
@@ -79,20 +101,24 @@ const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
 
 const UserProfile = async ({ params }: UserProfileProps) => {
   const { user, flipnoteCount } = await fetchProfile(params.id);
-  const { name, stars } = user;
+  const { name, starCounts } = user;
 
-  console.log(user);
+  log(user);
 
   return (
     <main className='w-full h-full px-16 pt-24'>
       <UserHeader
         id={params.id}
         userName={name}
-        {...{ stars, flipnoteCount }}
+        {...{ starCounts, flipnoteCount }}
       />
       <Portfolio {...{ user }} />
     </main>
   );
 };
+
+function capitalize(input: string) {
+  return input[0].toUpperCase() + input.slice(1);
+}
 
 export default UserProfile 
