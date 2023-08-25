@@ -1,7 +1,9 @@
 import React from 'react'
+import { Metadata } from 'next';
 
 import Portfolio from '@/app/_components/portfolio';
 import { prisma } from '@/app/api/db';
+import { SiteTitle } from '@/app/_utils/constants';
 
 // TODO: Fix so that flipnotes not fetched initially?
 // TODO: Move behavior into route
@@ -13,11 +15,32 @@ const fetchProfile = async (id: string) => {
     where: { userId: id },
   });
 
+  if (!user) throw new Error('Failed to load user');
+
   return {
     user,
-    flipnoteCount: flipnoteCount?._count,
+    flipnoteCount: flipnoteCount._count,
   };
 };
+
+type Props = {
+  params: { id: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // read route params
+  const id = params.id;
+
+  // fetch data
+  const data = await prisma.user.findUnique({
+    where: { id },
+    select: { name: true },
+  });
+
+  return {
+    title: data?.name ? `${SiteTitle} | ${data?.name}` : undefined,
+  };
+}
 
 type UserProfileProps = {
   params: { id: string };
