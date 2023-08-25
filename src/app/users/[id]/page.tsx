@@ -70,11 +70,7 @@ const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
         </div>
         <div className='flex'>
           <p className='text-main-offline'>{`${flipnoteCount} Flipnotes`}</p>
-          <ul>
-            {}
-            
-          </ul>
-
+          <ul>{}</ul>
         </div>
       </div>
     </header>
@@ -82,14 +78,18 @@ const UserHeader = ({ id, userName, flipnoteCount }: UserHeaderProps) => {
 };
 
 const UserProfile = async ({ params }: UserProfileProps) => {
-  const { id } = params;
-  const { user, flipnoteCount } = await fetchProfile(id);
+  const { user, flipnoteCount } = await fetchProfile(params.id);
+  const { name, stars } = user;
 
-  if (!user) throw new Error('Failed to load user');
+  console.log(user);
 
   return (
     <main className='w-full h-full px-16 pt-24'>
-      <UserHeader userName={user.name} {...{ id, flipnoteCount }} />
+      <UserHeader
+        id={params.id}
+        userName={name}
+        {...{ stars, flipnoteCount }}
+      />
       <Portfolio {...{ user }} />
     </main>
   );
