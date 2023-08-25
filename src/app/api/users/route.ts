@@ -1,20 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { prisma } from '@/app/_server/db';
 
 export const revalidate = 30;
 
 // Must pass request object here to prevent caching
 // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#opting-out-of-caching
-export async function GET(request: NextRequest) {
-  let users: User[] = [];
+type PostedUser = {
+  id: string;
+};
+export async function POST(request: NextRequest) {
+  const res = await request.json();
+  const postedUsers: PostedUser[] = res.data;
 
+  let users: User[];
   try {
-    users  = await prisma.user 
-      .findMany()
+    // Execute the query using Prisma's queryRaw method
+    users = await prisma.$queryRaw`
+    SELECT *
+    FROM "User"
+    WHERE id IN (${Prisma.join(postedUsers)})
+  `;
+    console.log(users);
   } catch (e) {
-    console.log(e)
-  } finally { await prisma.$disconnect() }
+    console.log(e);
+  } finally {
+    await prisma.$disconnect();
+  }
 
   return NextResponse.json({ users });
 }

@@ -18,8 +18,6 @@ export const useFlipnotes = (
     ))
   )
 
-  if (!users.length) throw new Error('No users provided')
-
   function handleUpdateCursor(cursor) {
     setFlipnoteCursors(
       (prevCursors) => ({ ...prevCursors, ...cursor })
