@@ -1,15 +1,21 @@
 'use client';
 
 import './globals.css';
-import React, { useRef, RefObject } from 'react';
+import React, { useState, useRef, RefObject } from 'react';
 import Image from 'next/image';
 
 import Header from '@/app/_components/header';
 import plus from '@/assets/images/plus.svg';
 import AddUser from '@/components/dialogs/addUser';
 import log from './_utils/log';
+import AnalyticsProvider from './_contexts/analytics';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [analytics, setAnalytics] = useState([]);
   const addUser = useRef<HTMLDialogElement>(null);
 
   return (
@@ -20,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Image src={plus} alt='Plus' />
           </button>
         </Header>
-        {children}
+        <AnalyticsProvider value={{ analytics, setAnalytics }}>
+          {children}
+        </AnalyticsProvider>
         <AddUser ref={addUser} handleClose={() => handleClose(addUser)} />
       </body>
     </html>
