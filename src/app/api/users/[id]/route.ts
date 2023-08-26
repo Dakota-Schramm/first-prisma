@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { Prisma } from '@prisma/client';
 
 import { prisma } from '@/app/api/db'; // Partial import to allow for seed script
-import { scrapeUserPage } from '@/app/_lib/puppeteer';
+import { scrapeUserPage } from '@/app/api/users/[id]/puppeteer';
 
 export async function GET(
   request: NextRequest,
