@@ -5,37 +5,11 @@ import { User } from '@prisma/client';
 
 import { Flipnote } from '@/app/_components/flipnote';
 import { useFlipnotes } from '@/hooks/useFlipnotes';
-import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
+import useFeed from '../_hooks/useFeed';
 
 export const BulletinBoard = () => {
-  const [feed, setFeed] = useState<User[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [feed, isLoaded] = useFeed();
   const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(feed);
-
-  useEffect(() => {
-    let users: User[] | undefined;
-    async function fetchUsers() {
-      const favorites = deserializeFavorites();
-
-      if (!favorites.length) {
-        const defaultUsers = await fetchDefaultFeed();
-        setFeed(defaultUsers);
-      } else {
-        const res = await fetch('/api/users', {
-          method: 'POST',
-          body: JSON.stringify({ data: favorites }),
-        });
-        const data = await res.json();
-        const selectedUsers = data.users;
-        setFeed(selectedUsers);
-      }
-    }
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    if (feed && 0 < feed?.length) setIsLoaded(true);
-  }, [feed]);
 
   useEffect(() => {
     handleGetNextFlipnotes();
@@ -65,9 +39,3 @@ function getUserName(users: User[], userId: string) {
   return user.name;
 }
 
-async function fetchDefaultFeed() {
-  const res = await fetch('/api/users/all');
-  const data = await res.json();
-
-  return data.users;
-}
