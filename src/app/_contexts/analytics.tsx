@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-const AnalyticsContext = createContext({
+export const AnalyticsContext = createContext({
   analytics: [],
   setAnalytics: () => {},
 });

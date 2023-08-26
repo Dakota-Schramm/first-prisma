@@ -2,7 +2,7 @@
 
 import classNames from 'classnames';
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import log from '@/app/_utils/log';
 import useWindowIntersection from '@/hooks/useWindowIntersection';
@@ -10,20 +10,27 @@ import LoadingFrog from '../loading-frog';
 import frog from './frog.png';
 
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
+import { AnalyticsContext } from '@/app/_contexts/analytics';
 
 // TODO: Fix error here where flipnotes don't lazy load
-const FlipnoteContent = ({ id }) => {
-  const [ isLoaded, setIsLoaded ] = useState(false)
+const FlipnoteContent = ({ flipnoteId, userId }) => {
+  const { analytics, setAnalytics } = useContext(AnalyticsContext);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    handleAnalyticsUpdate(userId, setAnalytics);
+  }, [isLoaded]);
 
   return (
     <div className='relative'>
       {!isLoaded && <LoadScreen />}
       <iframe
-        key={id}
-        src={`${BASE_URL}/${id}`}
+        key={flipnoteId}
+        src={`${BASE_URL}/${flipnoteId}`}
         onLoad={() => {
           setIsLoaded(true);
-          log(`Flipnote ${id} loaded`);
+          log(`Flipnote ${flipnoteId} loaded`);
         }}
         loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
         allowFullScreen
@@ -33,16 +40,30 @@ const FlipnoteContent = ({ id }) => {
         width={512}
       />
     </div>
-  )
+  );
+};
+
+function handleAnalyticsUpdate(userId, update) {
+  update((prev) => {
+    const isNewEntry = !(userId in (prev?.users ?? []));
+
+    return {
+      ...prev,
+      users: {
+        ...prev.users,
+        [userId]: isNewEntry ? 1 : prev.users[userId] + 1,
+      },
+    };
+  });
 }
 
 type FlipnoteProps = {
-  id: string
-  userId: string
-  userName: string
-  isLast: boolean
-  handleGetNextFlipnotes: () => void
-}
+  id: string;
+  userId: string;
+  userName: string;
+  isLast: boolean;
+  handleGetNextFlipnotes: () => void;
+};
 
 // TODO: Add styles for child elements when details is open
 // TODO: Use postit note design:
@@ -51,7 +72,7 @@ type FlipnoteProps = {
 // maybe see if can lazy load based on when details is opened
 // for first time
 // TODO: Fix loading issue on throttled version --
-// Doesn't stay on loading screen for full time 
+// Doesn't stay on loading screen for full time
 // its loading -- instead, shows iframe with its own
 // respective loading animation
 const Flipnote = ({
@@ -59,15 +80,15 @@ const Flipnote = ({
   userId,
   userName,
   isLast,
-  handleGetNextFlipnotes
+  handleGetNextFlipnotes,
 }: FlipnoteProps) => {
-  const [ isOpen, setIsOpen ] = useState(false)
-  const [ detailsRef, isVisible ] = useWindowIntersection()
+  const [isOpen, setIsOpen] = useState(false);
+  const [detailsRef, isVisible] = useWindowIntersection();
 
   useEffect(() => {
-    if (!isVisible || !isLast) return
-    handleGetNextFlipnotes()
-  }, [isVisible])
+    if (!isVisible || !isLast) return;
+    handleGetNextFlipnotes();
+  }, [isVisible]);
 
   return (
     <details
@@ -76,16 +97,17 @@ const Flipnote = ({
         'my-4 text-black bg-white border border-black border-solid w-[512px] h-full flex flex-col items-center justify-center',
         { 'p-0': isOpen },
         { 'p-4': !isOpen }
-
       )}
       open={isOpen}
       onToggle={() => setIsOpen(!isOpen)}
     >
-      <summary className={classNames(
-        'text-xl font-bold',
-        { 'p-0': !isOpen },
-        { 'p-4': isOpen }
-      )}>
+      <summary
+        className={classNames(
+          'text-xl font-bold',
+          { 'p-0': !isOpen },
+          { 'p-4': isOpen }
+        )}
+      >
         Flipnote by{' '}
         <Link
           href={`/user/${userId}`}
@@ -94,10 +116,10 @@ const Flipnote = ({
           {userName}
         </Link>
       </summary>
-      <FlipnoteContent {...{ id }} />
+      <FlipnoteContent {...{ flipnoteId: id, userId }} />
     </details>
   );
-}
+};
 
 // TODO: Memoize?
 // TODO: Fix styling so that loading from is in bottom right

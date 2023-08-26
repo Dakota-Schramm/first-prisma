@@ -1,7 +1,7 @@
 'use client';
 
 import './globals.css';
-import React, { useState, useRef, RefObject } from 'react';
+import React, { useState, useRef, RefObject, useEffect } from 'react';
 import Image from 'next/image';
 
 import Header from '@/app/_components/header';
