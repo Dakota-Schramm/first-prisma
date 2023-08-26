@@ -1,24 +1,42 @@
-import './globals.css'
-import type { Metadata } from 'next'
+'use client';
 
-import { SiteTitle } from './_utils/constants'
+import './globals.css';
+import React, { useRef, RefObject } from 'react';
+import Image from 'next/image';
 
-export const metadata: Metadata = {
-  title: SiteTitle,
-  description: 'A Sudomemo clone for viewing legacy Flipnotes. ' +
-    'Built with Next.js, Tailwind CSS, and TypeScript.',
-}
+import Header from '@/app/_components/header';
+import plus from '@/assets/images/plus.svg';
+import AddUser from '@/components/dialogs/addUser';
+import log from './_utils/log';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const addUser = useRef<HTMLDialogElement>(null);
+
   return (
-    <html lang="en">
-      <body className="bg-main-online">
+    <html lang='en'>
+      <body className='bg-main-online'>
+        <Header>
+          <button onClick={() => handleOpen(addUser)}>
+            <Image src={plus} alt='Plus' />
+          </button>
+        </Header>
         {children}
+        <AddUser ref={addUser} handleClose={() => handleClose(addUser)} />
       </body>
     </html>
-  )
+  );
+}
+
+function handleOpen(ref: RefObject<HTMLDialogElement>) {
+  const node = ref.current!;
+  if (node) {
+    node.showModal();
+    log('Open: ', node.open);
+  }
+}
+
+function handleClose(ref: RefObject<HTMLDialogElement>) {
+  const node = ref.current!;
+  log('closing');
+  if (node) node.close();
 }

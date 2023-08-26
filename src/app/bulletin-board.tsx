@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import { User } from '@prisma/client';
 
 import { Flipnote } from '@/app/_components/flipnote';
 import { useFlipnotes } from '@/hooks/useFlipnotes';
-import useFeed from '../_hooks/useFeed';
+import useFeed from './_hooks/useFeed';
 
 export const BulletinBoard = () => {
   const [feed, isLoaded] = useFeed();
@@ -38,4 +38,3 @@ function getUserName(users: User[], userId: string) {
 
   return user.name;
 }
-

@@ -1,34 +1,28 @@
-import { prisma } from '@/app/api/db';
+import { User } from '@prisma/client';
+import type { Metadata } from 'next';
 
-async function getData() {
-  const allUsers = await prisma.user.findMany();
+import { BulletinBoard } from './bulletin-board';
+import { SiteTitle } from './_utils/constants';
 
-  return allUsers;
-}
+// TODO: Get fonts from sudomemo site
+// TODO: Get colors from sudomemo site
+// TODO: Figure out if can invaldate using a hook?
 
-export default async function Home() {
-  let data = [];
-  try {
-    data = await getData();
-  } catch (error) {
-    // This will activate the closest `error.js` Error Boundary
-    console.error(error);
-    throw new Error('Failed to fetch data');
-  } finally {
-    await prisma.$disconnect();
-  }
+export const revalidate = 60;
 
+export const metadata: Metadata = {
+  title: SiteTitle,
+  description:
+    'A Sudomemo clone for viewing legacy Flipnotes. ' +
+    'Built with Next.js, Tailwind CSS, and TypeScript.',
+};
+
+// TODO: Add error handling for when user has
+// no additional flipnotes to display
+export default async function Feed() {
   return (
-    <main className='flex flex-col items-center justify-between min-h-screen p-24'>
-      {data.map((user) => (
-        <div
-          key={user.id}
-          className='flex flex-col items-center justify-center w-full h-64 p-8 my-8 text-black bg-white rounded shadow'
-        >
-          <h1 className='text-4xl font-bold'>{user.name}</h1>
-          <p className='text-xl'>{user.email}</p>
-        </div>
-      ))}
+    <main className='flex flex-col items-center justify-between min-h-screen p-24 '>
+      <BulletinBoard />
     </main>
   );
 }
