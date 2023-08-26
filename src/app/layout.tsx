@@ -15,7 +15,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [analytics, setAnalytics] = useState([]);
+  const [analytics, setAnalytics] = useState({});
   const addUser = useRef<HTMLDialogElement>(null);
 
   return (

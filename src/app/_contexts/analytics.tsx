@@ -1,7 +1,11 @@
 import { createContext } from 'react';
 
+type Analytics = {
+  [key: string]: { [key: string]: number; };
+};
+
 export const AnalyticsContext = createContext({
-  analytics: [],
+  analytics: {},
   setAnalytics: () => {},
 });
 

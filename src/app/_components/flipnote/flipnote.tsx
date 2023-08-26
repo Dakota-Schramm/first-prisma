@@ -2,7 +2,7 @@
 
 import classNames from 'classnames';
 import Link from 'next/link'
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 
 import log from '@/app/_utils/log';
 import useWindowIntersection from '@/hooks/useWindowIntersection';
@@ -16,11 +16,20 @@ import { AnalyticsContext } from '@/app/_contexts/analytics';
 const FlipnoteContent = ({ flipnoteId, userId }) => {
   const { analytics, setAnalytics } = useContext(AnalyticsContext);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasBeenViewed, setHasBeenViewed] = useState(false);
 
   useEffect(() => {
-    if (!isLoaded) return;
-    handleAnalyticsUpdate(userId, setAnalytics);
-  }, [isLoaded]);
+    const monitor = setInterval(() => {
+      if (hasBeenViewed) return;
+      const elem = document.activeElement;
+      const elemIsIframe = elem?.tagName === 'IFRAME';
+      if (!elemIsIframe) return;
+      const [aUId, aFId] = elem.id.split('-');
+      console.log({ aUId, aFId });
+      setHasBeenViewed(true);
+      handleAnalyticsUpdate(aUId, aFId, setAnalytics);
+    }, 1000 * 15);
+  }, []);
 
   return (
     <div className='relative'>
@@ -28,6 +37,7 @@ const FlipnoteContent = ({ flipnoteId, userId }) => {
       <iframe
         key={flipnoteId}
         src={`${BASE_URL}/${flipnoteId}`}
+        id={`${userId}-${flipnoteId}`}
         onLoad={() => {
           setIsLoaded(true);
           log(`Flipnote ${flipnoteId} loaded`);
@@ -43,17 +53,31 @@ const FlipnoteContent = ({ flipnoteId, userId }) => {
   );
 };
 
-function handleAnalyticsUpdate(userId, update) {
-  update((prev) => {
-    const isNewEntry = !(userId in (prev?.users ?? []));
+function handleAnalyticsUpdate(userId: string, flipnoteId: string, update) {
+  update((prevUsers) => {
+    console.log(prevUsers);
+    log(`Analytics updated for user ${userId}`);
+    let increment = 1;
 
-    return {
-      ...prev,
-      users: {
-        ...prev.users,
-        [userId]: isNewEntry ? 1 : prev.users[userId] + 1,
-      },
+    const isNewUser = !(userId in (prevUsers ?? {}));
+    const isNewFlipnote =
+      isNewUser || !(flipnoteId in (prevUsers[userId] ?? {}));
+    let flipnoteToUpdate = !isNewFlipnote
+      ? { [flipnoteId]: prevUsers[userId][flipnoteId] + 1 }
+      : { [flipnoteId]: 1 };
+
+    let userToUpdate = !isNewUser
+      ? { [userId]: { ...flipnoteToUpdate, ...prevUsers[userId] } }
+      : { [userId]: { ...flipnoteToUpdate } };
+
+    if (!isNewFlipnote) increment += prevUsers[userId][flipnoteId];
+
+    const updatedUserAnalytics = {
+      ...prevUsers,
+      ...userToUpdate,
     };
+
+    return updatedUserAnalytics;
   });
 }
 
