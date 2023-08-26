@@ -26,6 +26,16 @@ body {
     rgb(var(--background-start-rgb));
 } */
 
+/* Generated using https://codepen.io/sosuke/pen/Pjoqqp */
+
+.filter-star-yellow {
+  filter: invert(87%) sepia(45%) saturate(939%) hue-rotate(336deg) brightness(102%) contrast(106%)
+}
+
+.filter-question-blue {
+  filter: invert(77%) sepia(6%) saturate(3694%) hue-rotate(179deg) brightness(102%) contrast(99%);
+}
+
 @font-face {
   font-family: 'PopHappinessStd-EB';
   src:  url('_assets/FOT-PopHappinessStd-EB.otf') format('opentype')

@@ -16,11 +16,13 @@ module.exports = {
       colors: {
         'main-online': '#71ba00',
         'main-offline': '#ff6f1c',
+        'star-yellow': '#ffd41d',
+        'star-blue': '#8fcffe',
       },
       fontFamily: {
         pop: ['PopHappinessStd-EB', 'sans-serif'],
-      }
+      },
     },
   },
   plugins: [],
-}
+};

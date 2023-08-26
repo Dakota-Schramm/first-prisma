@@ -6,8 +6,10 @@ import { User } from '@prisma/client';
 import { Flipnote } from '@/app/_components/flipnote';
 import { useFlipnotes } from '@/hooks/useFlipnotes';
 import useFeed from './_hooks/useFeed';
+import FeedSelector from './feed-selector';
 
 export const BulletinBoard = () => {
+  const [feedType, setFeedType] = useState('all');
   const [feed, isLoaded] = useFeed();
   const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(feed);
 
@@ -16,19 +18,22 @@ export const BulletinBoard = () => {
   }, [isLoaded]);
 
   return (
-    <section className='flex flex-col items-center justify-between min-h-screen p-24'>
-      {flipnotes.map(({ id, userId }, idx) => {
-        const userName = getUserName(feed, userId);
+    <>
+      <FeedSelector {...{ feedType, setFeedType }} />
+      <section className='flex flex-col items-center justify-between min-h-screen p-24'>
+        {flipnotes.map(({ id, userId }, idx) => {
+          const userName = getUserName(feed, userId);
 
-        return (
-          <Flipnote
-            key={id}
-            isLast={idx === flipnotes.length - 1}
-            {...{ id, userId, userName, handleGetNextFlipnotes }}
-          />
-        );
-      })}
-    </section>
+          return (
+            <Flipnote
+              key={id}
+              isLast={idx === flipnotes.length - 1}
+              {...{ id, userId, userName, handleGetNextFlipnotes }}
+            />
+          );
+        })}
+      </section>
+    </>
   );
 };
 
