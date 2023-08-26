@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { notFound } from 'next/navigation'
 import { Prisma } from '@prisma/client';
 
-import { prisma } from '@/app/_server/db'; // Partial import to allow for seed script
+import { prisma } from '@/app/api/db'; // Partial import to allow for seed script
 import { scrapeUserPage } from '@/app/_lib/puppeteer';
 
 export async function GET(

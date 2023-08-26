@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { User, Flipnote } from '@prisma/client';
 
-import { prisma } from '@/app/_server/db';
+import { prisma } from '@/app/api/db';
 
 const FLIPNOTES_TO_ADD = 3
 

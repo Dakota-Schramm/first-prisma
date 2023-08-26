@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Portfolio from '@/app/_components/portfolio';
-import { prisma } from '@/app/_server/db';
+import { prisma } from '@/app/api/db';
 
 // TODO: Fix so that flipnotes not fetched initially?
 // TODO: Move behavior into route

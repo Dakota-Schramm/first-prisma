@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma, User } from '@prisma/client';
-import { prisma } from '@/app/_server/db';
+import { prisma } from '@/app/api/db';
 
 export const revalidate = 30;
 
