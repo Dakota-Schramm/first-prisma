@@ -19,7 +19,7 @@ export function useFeed() {
         const defaultUsers = await fetchDefaultFeed();
         setFeed(defaultUsers);
       } else {
-        const res = await fetch('/api/users', {
+        const res = await fetch('/api/users/favorites', {
           method: 'POST',
           body: JSON.stringify({ data: favorites }),
         });
@@ -39,7 +39,7 @@ export function useFeed() {
 }
 
 async function fetchDefaultFeed() {
-  const res = await fetch('/api/users/all');
+  const res = await fetch('/api/users');
   const data = await res.json();
 
   return data.users;

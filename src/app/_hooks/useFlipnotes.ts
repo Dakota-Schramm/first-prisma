@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { User } from '@prisma/client'
 
-const BATCH_FLIPNOTE_URL = (id: string) => `/api/user/${id}/flipnoteBatch`
+const BATCH_FLIPNOTE_URL = (id: string) => `/api/users/${id}/flipnotes`;
 
 export const useFlipnotes = (
   users: User[] = [],
@@ -26,12 +26,11 @@ export const useFlipnotes = (
 
   async function handleGetNextFlipnotes() {
     const flipnoteResponses = users.map(async (user) => {
-      const URL = BATCH_FLIPNOTE_URL(user.id)
-      const response = await fetch(URL, {
+      const response = await fetch(BATCH_FLIPNOTE_URL(user.id), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cursor: flipnoteCursors[user.id] }),
-      })
+      });
 
       if (!response.ok) throw new Error('Could not fetch flipnotes')
       const data = await response.json();

@@ -75,7 +75,7 @@ const UserForm = ({ handleSubmitted }: { handleSubmitted: () => void }) => {
         onClick={async (e) => {
           e.preventDefault()
           setIsLoading(true)
-          const response = await fetch(`/api/user/${input}`)
+          const response = await fetch(`/api/users/${input}`);
           setIsLoading(false)
           if (!response.ok) throw Error(response.statusText)
           handleSubmitted()
