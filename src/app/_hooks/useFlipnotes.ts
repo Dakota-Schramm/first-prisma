@@ -5,6 +5,8 @@ import { User } from '@prisma/client'
 
 const BATCH_FLIPNOTE_URL = (id: string) => `/api/users/${id}/flipnotes`;
 
+// TODO: Create function that allows user to switch to different feed
+// and completely clear out current flipnotes
 export const useFlipnotes = (
   users: User[] = [],
 ) => {
@@ -18,6 +20,13 @@ export const useFlipnotes = (
     ))
   )
   console.log({ UsersInUseFlipnotes: users });
+
+  useEffect(() => {
+    if (users.length === 0) return;
+    handleGetNextFlipnotes();
+  }, [users]);
+  
+
 
   function handleUpdateCursor(cursor) {
     setFlipnoteCursors((prevCursors) => ({ ...prevCursors, ...cursor }));

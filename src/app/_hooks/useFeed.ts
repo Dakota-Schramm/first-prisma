@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
 import { User } from '@prisma/client';
+
 import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
+import { useFlipnotes } from '@/hooks/useFlipnotes';
 
 export type FeedDataProps = {
   type: 'all' | 'favorites' | 'random';
@@ -18,8 +19,12 @@ export function useFeed() {
     users: [],
     isLoaded: false,
   });
+  const { users, type } = feedData;
+
+  const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(users);
 
   useEffect(() => {
+    console.log({ type });
     let users: User[] | undefined;
     async function fetchUsers() {
       switch (feedData.type) {
@@ -44,15 +49,22 @@ export function useFeed() {
       }
     }
     fetchUsers();
-  }, [feedData.type]);
+  }, [type]);
 
   useEffect(() => {
     if (feedData.users && 0 < feedData.users?.length) {
       setFeedData((f) => ({ ...f, isLoaded: true }));
     }
-  }, [feedData.users]);
+  }, [users]);
 
-  return { feedData, setFeedData };
+  return {
+    flipnotes,
+    type,
+    handleGetNextFlipnotes,
+    handleFeedTypeChange: (type: FeedDataProps['type']) => {
+      setFeedData((prev) => ({ ...prev, type }));
+    },
+  };
 }
 
 async function fetchDefaultFeed() {

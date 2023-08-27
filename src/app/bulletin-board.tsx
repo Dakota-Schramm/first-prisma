@@ -18,11 +18,7 @@ export const BulletinBoard = () => {
   );
   const { analytics, setAnalytics } = useContext(AnalyticsContext);
 
-  useEffect(() => {
-    handleGetNextFlipnotes();
-  }, []);
-
-  // TODO: Move to Bulletin-Board
+  // TODO: Move to Bulletin-Boardn
   useEffect(() => {
     const monitor = setInterval(() => {
       if (hasBeenViewed) return;
