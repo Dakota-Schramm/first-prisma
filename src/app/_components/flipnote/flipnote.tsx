@@ -18,6 +18,7 @@ const FlipnoteContent = ({ flipnoteId, userId }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasBeenViewed, setHasBeenViewed] = useState(false);
 
+  // TODO: Move to Bulletin-Board
   useEffect(() => {
     const monitor = setInterval(() => {
       if (hasBeenViewed) return;
@@ -134,7 +135,7 @@ const Flipnote = ({
       >
         Flipnote by{' '}
         <Link
-          href={`/user/${userId}`}
+          href={`/users/${userId}`}
           className='underline hover:text-main-offline'
         >
           {userName}
