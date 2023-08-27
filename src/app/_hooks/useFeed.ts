@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { User } from '@prisma/client';
 import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
 
-type FeedDataProps = {
+export type FeedDataProps = {
   type: 'all' | 'favorites' | 'random';
   users: User[];
   isLoaded: boolean;
@@ -22,8 +22,6 @@ export function useFeed() {
   useEffect(() => {
     let users: User[] | undefined;
     async function fetchUsers() {
-      const favorites = deserializeFavorites();
-
       switch (feedData.type) {
         case 'all': {
           const defaultUsers = await fetchDefaultFeed();
@@ -33,7 +31,7 @@ export function useFeed() {
         case 'favorites': {
           const res = await fetch('/api/users/favorites', {
             method: 'POST',
-            body: JSON.stringify({ data: favorites }),
+            body: JSON.stringify({ data: deserializeFavorites() }),
           });
           const data = await res.json();
           const selectedUsers = data.users;
@@ -54,7 +52,7 @@ export function useFeed() {
     }
   }, [feedData.users]);
 
-  return [feedData, setFeedData];
+  return { feedData, setFeedData };
 }
 
 async function fetchDefaultFeed() {

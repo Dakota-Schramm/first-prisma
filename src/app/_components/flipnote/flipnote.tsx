@@ -97,7 +97,7 @@ const Flipnote = ({
           {userName}
         </Link>
       </summary>
-      <FlipnoteContent {...{ flipnoteId: id, userId }} />
+      <FlipnoteContent flipnoteId={id} {...{ userId }} />
     </details>
   );
 };

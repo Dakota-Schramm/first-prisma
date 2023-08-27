@@ -17,11 +17,10 @@ export const useFlipnotes = (
       (user) => [user.id, undefined]
     ))
   )
+  console.log({ UsersInUseFlipnotes: users });
 
   function handleUpdateCursor(cursor) {
-    setFlipnoteCursors(
-      (prevCursors) => ({ ...prevCursors, ...cursor })
-    )
+    setFlipnoteCursors((prevCursors) => ({ ...prevCursors, ...cursor }));
   }
 
   async function handleGetNextFlipnotes() {
@@ -32,20 +31,18 @@ export const useFlipnotes = (
         body: JSON.stringify({ cursor: flipnoteCursors[user.id] }),
       });
 
-      if (!response.ok) throw new Error('Could not fetch flipnotes')
+      if (!response.ok) throw new Error('Could not fetch flipnotes');
       const data = await response.json();
 
-      const { flipnotes: flipnotesToAdd, cursor } = data
+      const { flipnotes: flipnotesToAdd, cursor } = data;
 
-      handleUpdateCursor({ [user.id]: cursor })
+      handleUpdateCursor({ [user.id]: cursor });
       return flipnotesToAdd;
     });
 
-    const flipnotes = await Promise.allSettled(flipnoteResponses);
+    const flipnotes = await Promise.all(flipnoteResponses);
 
-    setFlipnotes(
-      (prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]
-    )
+    setFlipnotes((prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]);
   }
 
   return { flipnotes, handleGetNextFlipnotes }
