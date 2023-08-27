@@ -5,37 +5,56 @@ import { useState, useEffect } from 'react';
 import { User } from '@prisma/client';
 import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
 
-export function useFeed() {
-  const [feed, setFeed] = useState<User[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+type FeedDataProps = {
+  type: 'all' | 'favorites' | 'random';
+  users: User[];
+  isLoaded: boolean;
+};
 
-  // TODO: Make hook for this
+// TODO: Fix hook so that feedType is checked on more than just initial render
+export function useFeed() {
+  const [feedData, setFeedData] = useState<FeedDataProps>({
+    type: 'all',
+    users: [],
+    isLoaded: false,
+  });
+
   useEffect(() => {
     let users: User[] | undefined;
     async function fetchUsers() {
       const favorites = deserializeFavorites();
 
-      if (!favorites.length) {
-        const defaultUsers = await fetchDefaultFeed();
-        setFeed(defaultUsers);
-      } else {
-        const res = await fetch('/api/users/favorites', {
-          method: 'POST',
-          body: JSON.stringify({ data: favorites }),
-        });
-        const data = await res.json();
-        const selectedUsers = data.users;
-        setFeed(selectedUsers);
+      switch (feedData.type) {
+        case 'all': {
+          const defaultUsers = await fetchDefaultFeed();
+          setFeedData((f) => ({ ...f, users: defaultUsers }));
+          return;
+        }
+        case 'favorites': {
+          const res = await fetch('/api/users/favorites', {
+            method: 'POST',
+            body: JSON.stringify({ data: favorites }),
+          });
+          const data = await res.json();
+          const selectedUsers = data.users;
+          setFeedData((f) => ({ ...f, users: selectedUsers }));
+          return;
+        }
+        case 'random':
+        default:
+          throw new Error(`Invalid feed type: ${feedData.type}`);
       }
     }
     fetchUsers();
-  }, []);
+  }, [feedData.type]);
 
   useEffect(() => {
-    if (feed && 0 < feed?.length) setIsLoaded(true);
-  }, [feed]);
+    if (feedData.users && 0 < feedData.users?.length) {
+      setFeedData((f) => ({ ...f, isLoaded: true }));
+    }
+  }, [feedData.users]);
 
-  return [feed, isLoaded];
+  return [feedData, setFeedData];
 }
 
 async function fetchDefaultFeed() {

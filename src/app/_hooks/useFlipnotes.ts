@@ -41,7 +41,7 @@ export const useFlipnotes = (
       return flipnotesToAdd;
     });
 
-    const flipnotes = await Promise.all(flipnoteResponses)
+    const flipnotes = await Promise.allSettled(flipnoteResponses);
 
     setFlipnotes(
       (prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]
