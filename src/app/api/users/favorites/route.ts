@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
     FROM "User"
     WHERE id IN (${Prisma.join(postedUsers)})
   `;
-    console.log(users);
   } catch (e) {
     console.log(e);
   } finally {

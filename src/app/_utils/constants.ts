@@ -1,6 +1,6 @@
 export const SiteTitle = "Flipnote Hatena"
 
-export const userStudioIds = [
+export const userHatenaIds = [
   '50C5EE30A0008E32', // Boss
   '56650B50CC783E17', // Gizmo
   '54B6AF501E13CA73', // Fred
@@ -8,5 +8,7 @@ export const userStudioIds = [
   '56650B50CC783E17', // Anthony
   '544C68D0A09D1B39', // Shiny Eevee
 ];
+
+export const userStudioIds = [...userHatenaIds];
 
 export const IFRAME_BASE_URL = 'https://archive.sudomemo.net/watch/embed'; 
