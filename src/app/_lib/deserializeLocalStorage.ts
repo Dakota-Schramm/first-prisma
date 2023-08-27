@@ -4,8 +4,11 @@ import { storageAvailable } from '../_lib/storageAvailable';
 
 // TODO: Move to useFavorites hook
 export function deserializeFavorites() {
-  if (!storageAvailable('localStorage'))
-    throw new Error('Local storage not available');
+  if (!storageAvailable('localStorage')) {
+    // handle gracefully
+    console.error('Local storage not available');
+    return [];
+  }
 
   const favoritesJsonString = localStorage.getItem('favorites');
   if (!favoritesJsonString) return [];
