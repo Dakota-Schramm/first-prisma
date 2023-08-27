@@ -15,7 +15,6 @@ export function deserializeFavorites() {
 
   const res = JSON.parse(favoritesJsonString);
   const data = res.data;
-  console.log(': ', localStorage, data);
 
   return data;
 }
