@@ -10,27 +10,10 @@ import LoadingFrog from '../loading-frog';
 import frog from './frog.png';
 
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
-import { AnalyticsContext } from '@/app/_contexts/analytics';
 
 // TODO: Fix error here where flipnotes don't lazy load
 const FlipnoteContent = ({ flipnoteId, userId }) => {
-  const { analytics, setAnalytics } = useContext(AnalyticsContext);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [hasBeenViewed, setHasBeenViewed] = useState(false);
-
-  // TODO: Move to Bulletin-Board
-  useEffect(() => {
-    const monitor = setInterval(() => {
-      if (hasBeenViewed) return;
-      const elem = document.activeElement;
-      const elemIsIframe = elem?.tagName === 'IFRAME';
-      if (!elemIsIframe) return;
-      const [aUId, aFId] = elem.id.split('-');
-      console.log({ aUId, aFId });
-      setHasBeenViewed(true);
-      handleAnalyticsUpdate(aUId, aFId, setAnalytics);
-    }, 1000 * 15);
-  }, []);
 
   return (
     <div className='relative'>
@@ -53,34 +36,6 @@ const FlipnoteContent = ({ flipnoteId, userId }) => {
     </div>
   );
 };
-
-function handleAnalyticsUpdate(userId: string, flipnoteId: string, update) {
-  update((prevUsers) => {
-    console.log(prevUsers);
-    log(`Analytics updated for user ${userId}`);
-    let increment = 1;
-
-    const isNewUser = !(userId in (prevUsers ?? {}));
-    const isNewFlipnote =
-      isNewUser || !(flipnoteId in (prevUsers[userId] ?? {}));
-    let flipnoteToUpdate = !isNewFlipnote
-      ? { [flipnoteId]: prevUsers[userId][flipnoteId] + 1 }
-      : { [flipnoteId]: 1 };
-
-    let userToUpdate = !isNewUser
-      ? { [userId]: { ...flipnoteToUpdate, ...prevUsers[userId] } }
-      : { [userId]: { ...flipnoteToUpdate } };
-
-    if (!isNewFlipnote) increment += prevUsers[userId][flipnoteId];
-
-    const updatedUserAnalytics = {
-      ...prevUsers,
-      ...userToUpdate,
-    };
-
-    return updatedUserAnalytics;
-  });
-}
 
 type FlipnoteProps = {
   id: string;
@@ -114,6 +69,7 @@ const Flipnote = ({
     if (!isVisible || !isLast) return;
     handleGetNextFlipnotes();
   }, [isVisible]);
+
 
   return (
     <details
