@@ -18,8 +18,6 @@ const Layout = ({
         links={
           <nav className='space-x-2'>
             <Link href='/'>Home</Link>
-            <span>{'|'}</span>
-            <Link href='/feed'>Feed</Link>
           </nav>
         }
       >
