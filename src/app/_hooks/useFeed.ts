@@ -7,7 +7,7 @@ import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
 import { useFlipnotes } from '@/hooks/useFlipnotes';
 
 export type FeedDataProps = {
-  type: 'all' | 'favorites' | 'random';
+  type: 'hatena' | 'favorites' | 'random';
   users: User[];
   isLoaded: boolean;
 };
@@ -15,24 +15,20 @@ export type FeedDataProps = {
 // TODO: Fix hook so that feedType is checked on more than just initial render
 export function useFeed() {
   const [feedData, setFeedData] = useState<FeedDataProps>({
-    type: 'all',
+    type: 'hatena',
     users: [],
     isLoaded: false,
   });
   const { users, type } = feedData;
 
-  const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(users);
+  const { flipnotes, handleGetNextFlipnotes, handleEmptyFlipnotes } = useFlipnotes(users);
 
   useEffect(() => {
     console.log({ type });
+
     let users: User[] | undefined;
     async function fetchUsers() {
-      switch (feedData.type) {
-        case 'all': {
-          const defaultUsers = await fetchDefaultFeed();
-          setFeedData((f) => ({ ...f, users: defaultUsers }));
-          return;
-        }
+      switch (type) {
         case 'favorites': {
           const res = await fetch('/api/users/favorites', {
             method: 'POST',
@@ -43,9 +39,20 @@ export function useFeed() {
           setFeedData((f) => ({ ...f, users: selectedUsers }));
           return;
         }
-        case 'random':
+        case 'hatena': {
+          const res = await fetch('/api/users/hatena');
+          const data = await res.json();
+          const selectedUsers = data.users;
+          setFeedData((f) => ({ ...f, users: selectedUsers }));
+          return;
+        }
+        case 'random': {
+          const defaultUsers = await fetchDefaultFeed();
+          setFeedData((f) => ({ ...f, users: defaultUsers }));
+          return;
+        }
         default:
-          throw new Error(`Invalid feed type: ${feedData.type}`);
+          throw new Error(`Invalid feed type: ${type}`);
       }
     }
     fetchUsers();
@@ -57,9 +64,17 @@ export function useFeed() {
     }
   }, [users]);
 
+  useEffect(() => {
+    console.log({ users });
+    if (users.length === 0) return;
+    console.log('hit');
+    handleEmptyFlipnotes();
+    handleGetNextFlipnotes();
+  }, [users]);
+
   return {
     flipnotes,
-    type,
+    feedData,
     handleGetNextFlipnotes,
     handleFeedTypeChange: (type: FeedDataProps['type']) => {
       setFeedData((prev) => ({ ...prev, type }));

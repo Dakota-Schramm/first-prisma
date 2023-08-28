@@ -14,25 +14,16 @@ export const useFlipnotes = (
   // For function, will use getFlipnoteIdsForUser if 
   // user has not been populated into DB yet
   const [ flipnotes, setFlipnotes ] = useState([])
-  const [ flipnoteCursors, setFlipnoteCursors ] = useState(
-    Object.fromEntries(users.map(
-      (user) => [user.id, undefined]
-    ))
-  )
-  console.log({ UsersInUseFlipnotes: users });
-
-  useEffect(() => {
-    if (users.length === 0) return;
-    handleGetNextFlipnotes();
-  }, [users]);
-  
-
+  const [flipnoteCursors, setFlipnoteCursors] = useState(
+    Object.fromEntries(users.map((user) => [user.id, undefined]))
+  );
 
   function handleUpdateCursor(cursor) {
     setFlipnoteCursors((prevCursors) => ({ ...prevCursors, ...cursor }));
   }
 
   async function handleGetNextFlipnotes() {
+    console.log('batchHandle');
     const flipnoteResponses = users.map(async (user) => {
       const response = await fetch(BATCH_FLIPNOTE_URL(user.id), {
         method: 'POST',
@@ -54,6 +45,10 @@ export const useFlipnotes = (
     setFlipnotes((prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]);
   }
 
-  return { flipnotes, handleGetNextFlipnotes }
+  return {
+    flipnotes,
+    handleGetNextFlipnotes,
+    handleEmptyFlipnotes: () => setFlipnotes([])
+  }
 }
 
