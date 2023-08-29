@@ -1,4 +1,4 @@
-import { prisma } from '@/app/_server/db';
+import { prisma } from '@/app/api/db';
 
 // TODO: Add sorting based on star numbers
 async function getData() {
