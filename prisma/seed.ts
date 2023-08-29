@@ -2,8 +2,8 @@
 import { PrismaClient } from '@prisma/client';
 
 import { scrapeUserPage } from '@/app/api/users/[id]/puppeteer';
-import { userStudioIds } from '../src/app/_utils/constants';
 import log from '@/app/_utils/log';
+import { starColors, userStudioIds } from '../src/app/_utils/constants';
 
 const prisma = new PrismaClient();
 
@@ -18,14 +18,13 @@ main()
   .then(async () => {
     log.info('Shutting down seed script...')
     await prisma.$disconnect();
-    process.exit()
+    process.exit();
   })
   .catch(async (e) => {
     log.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });
-
 
 async function upsertUser(userId: string) {
   const page = await scrapeUserPage(userId);
@@ -41,7 +40,7 @@ async function upsertUser(userId: string) {
         create: page.flipnoteIds.map((id) => ({ id })),
       },
       starCounts: {
-        create: ['yellow', 'green', 'red', 'blue', 'purple'].map((c, idx) => ({
+        create: starColors.map((c, idx) => ({
           type: c,
           count: page.stars[idx],
         })),

@@ -1,5 +1,7 @@
 export const SiteTitle = "Flipnote Hatena"
 
+export const starColors = ['yellow', 'green', 'red', 'blue', 'purple'];
+
 export const userHatenaIds = [
   '50C5EE30A0008E32', // Boss
   '56650B50CC783E17', // Gizmo
