@@ -12,6 +12,7 @@ import log from '@/app/_utils/log';
 export const BulletinBoard = () => {
   const { flipnotes, feedData, handleGetNextFlipnotes, handleFeedTypeChange } =
     useFeed();
+  const { type, users, userCount, favoriteCount } = feedData;
 
   const [hasBeenViewed, setHasBeenViewed] = useState(
     flipnotes.map((fId) => ({ [fId]: false }))
@@ -42,15 +43,16 @@ export const BulletinBoard = () => {
   return (
     <>
       <FeedSelector
-        feedType={feedData.type}
+        feedType={type}
         setFeedType={(t) => handleFeedTypeChange(t)}
+        {...{ userCount, favoriteCount }}
       />
       <section className='flex flex-col items-center justify-between min-h-screen p-24'>
         {flipnotes.map(({ id, userId }, idx) => (
           <Flipnote
             key={id}
             isLast={idx === flipnotes.length - 1}
-            userName={getUserName(feedData.users, userId)}
+            userName={getUserName(users, userId)}
             {...{ id, userId, handleGetNextFlipnotes }}
           />
         ))}

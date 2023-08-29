@@ -11,13 +11,25 @@ import star from '@/assets/images/star.svg';
 import question_mark from '@/assets/images/question-mark.svg';
 import { deserializeFavorites } from './_lib/deserializeLocalStorage';
 
-const FeedSelector = ({ feedType, setFeedType }) => {
+type FeedSelectorProps = {
+  feedType: string;
+  setFeedType: (feedType: string) => void;
+  userCount: number;
+  favoriteCount: number;
+};
+
+const FeedSelector = ({
+  feedType,
+  setFeedType,
+  userCount,
+  favoriteCount,
+}: FeedSelectorProps) => {
   const favorites = deserializeFavorites();
   const favoritesPresent = 1 <= favorites.length;
 
   return (
-    <nav className='absolute flex items-center justify-center p-2 bg-gray-100 rounded-lg'>
-      <LayoutGroup>
+    <>
+      <nav className='absolute flex items-center justify-center p-2 bg-gray-100 rounded-lg'>
         {['hatena', 'favorites', 'random'].map((type) => {
           const isSelected = feedType == type;
           switch (type) {
@@ -26,6 +38,7 @@ const FeedSelector = ({ feedType, setFeedType }) => {
                 <section className='relative'>
                   <button
                     key={type}
+                    id={`feed-${type}`}
                     className='relative z-10'
                     onClick={() => setFeedType(type)}
                   >
@@ -51,7 +64,11 @@ const FeedSelector = ({ feedType, setFeedType }) => {
                 <section className='relative'>
                   <button
                     key={type}
-                    className='relative z-10'
+                    id={`feed-${type}`}
+                    className={classNames(
+                      'relative z-10',
+                      'after:w-fit after:h-3 after:bg-red-500 after:absolute after:top-0 after:right-0 after:rounded-lg after:text-white after:text-xs after:leading-3'
+                    )}
                     onClick={() => setFeedType(type)}
                   >
                     <Image
@@ -59,6 +76,7 @@ const FeedSelector = ({ feedType, setFeedType }) => {
                       width={40}
                       height={40}
                       alt='Person'
+                      className='after:w-2 after:h-2 after:bg-red-500 after:absolute after:top-0 after:right-0 after:rounded-lg'
                     />
                     <Image
                       className='absolute bottom-1 right-1 filter-star-yellow'
@@ -83,7 +101,11 @@ const FeedSelector = ({ feedType, setFeedType }) => {
                 <section className='relative'>
                   <button
                     key={type}
-                    className='relative z-10'
+                    id={`feed-${type}`}
+                    className={classNames(
+                      'relative z-10',
+                      'after:w-fit after:h-3 after:bg-red-500 after:absolute after:top-0 after:right-0 after:rounded-lg after:text-white after:text-xs after:leading-3'
+                    )}
                     onClick={() => setFeedType(type)}
                   >
                     <Image
@@ -113,8 +135,17 @@ const FeedSelector = ({ feedType, setFeedType }) => {
               throw new Error(`Invalid feed type: ${type}`);
           }
         })}
-      </LayoutGroup>
-    </nav>
+      </nav>
+      <style>{`
+        button#feed-favorites::after {
+          content: "${favoriteCount}";
+        }
+
+        button#feed-random::after {
+          content: "${userCount}";
+        }
+      `}</style>
+    </>
   );
 };
 
