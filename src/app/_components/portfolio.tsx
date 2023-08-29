@@ -31,9 +31,8 @@ const Portfolio = ({ user }: { user: User }) => {
   const { flipnotes, handleGetNextFlipnotes } = useFlipnotes([user])
 
   useEffect(() => {
-    handleGetNextFlipnotes()
-  }, [])
-  
+    handleGetNextFlipnotes();
+  }, []);
 
   // TODO: Remove margin from element in last column
   return (

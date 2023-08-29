@@ -3,32 +3,30 @@
 import { useState, useEffect, useContext } from 'react';
 import { User } from '@prisma/client';
 
-import { Flipnote } from '@/app/_components/flipnote';
-import { useFlipnotes } from '@/hooks/useFlipnotes';
-import useFeed from './_hooks/useFeed';
-import FeedSelector from './feed-selector';
-import log from '@/app/_utils/log';
 import { AnalyticsContext } from '@/app/_contexts/analytics';
+import { Flipnote } from '@/app/_components/flipnote';
+import FeedSelector from './feed-selector';
+import useFeed from '@/hooks/useFeed';
+import log from '@/app/_utils/log';
 
 export const BulletinBoard = () => {
-  const [feedData, setFeedData] = useFeed();
-  const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(feedData.users);
+  const { flipnotes, feedData, handleGetNextFlipnotes, handleFeedTypeChange } =
+    useFeed();
+  const { type, users, userCount, favoriteCount } = feedData;
+
   const [hasBeenViewed, setHasBeenViewed] = useState(
     flipnotes.map((fId) => ({ [fId]: false }))
   );
   const { analytics, setAnalytics } = useContext(AnalyticsContext);
 
-  useEffect(() => {
-    handleGetNextFlipnotes();
-  }, []);
-
-  // TODO: Move to Bulletin-Board
+  // TODO: Move to Bulletin-Boardn
   useEffect(() => {
     const monitor = setInterval(() => {
       if (hasBeenViewed) return;
       const elem = document.activeElement;
       const elemIsIframe = elem?.tagName === 'IFRAME';
       if (!elemIsIframe) return;
+      clearInterval(monitor);
       const [aUId, aFId] = elem.id.split('-');
       console.log({ aUId, aFId });
       setHasBeenViewed((prev) => {
@@ -38,18 +36,23 @@ export const BulletinBoard = () => {
     }, 1000 * 15);
   }, []);
 
+  useEffect(() => {
+    console.log({ UF: flipnotes });
+  }, [flipnotes]);
+
   return (
     <>
       <FeedSelector
-        feedType={feedData.type}
-        setFeedType={(t) => setFeedData((prev) => ({ ...prev, type: t }))}
+        feedType={type}
+        setFeedType={(t) => handleFeedTypeChange(t)}
+        {...{ userCount, favoriteCount }}
       />
       <section className='flex flex-col items-center justify-between min-h-screen p-24'>
         {flipnotes.map(({ id, userId }, idx) => (
           <Flipnote
             key={id}
             isLast={idx === flipnotes.length - 1}
-            userName={getUserName(feed, userId)}
+            userName={getUserName(users, userId)}
             {...{ id, userId, handleGetNextFlipnotes }}
           />
         ))}
@@ -60,7 +63,6 @@ export const BulletinBoard = () => {
 
 function handleAnalyticsUpdate(userId: string, flipnoteId: string, update) {
   update((prevUsers) => {
-    console.log(prevUsers);
     log(`Analytics updated for user ${userId}`);
     let increment = 1;
 

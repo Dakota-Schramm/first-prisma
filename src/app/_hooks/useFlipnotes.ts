@@ -5,6 +5,8 @@ import { User } from '@prisma/client'
 
 const BATCH_FLIPNOTE_URL = (id: string) => `/api/users/${id}/flipnotes`;
 
+// TODO: Create function that allows user to switch to different feed
+// and completely clear out current flipnotes
 export const useFlipnotes = (
   users: User[] = [],
 ) => {
@@ -12,18 +14,16 @@ export const useFlipnotes = (
   // For function, will use getFlipnoteIdsForUser if 
   // user has not been populated into DB yet
   const [ flipnotes, setFlipnotes ] = useState([])
-  const [ flipnoteCursors, setFlipnoteCursors ] = useState(
-    Object.fromEntries(users.map(
-      (user) => [user.id, undefined]
-    ))
-  )
-  console.log({ UsersInUseFlipnotes: users });
+  const [flipnoteCursors, setFlipnoteCursors] = useState(
+    Object.fromEntries(users.map((user) => [user.id, undefined]))
+  );
 
   function handleUpdateCursor(cursor) {
     setFlipnoteCursors((prevCursors) => ({ ...prevCursors, ...cursor }));
   }
 
   async function handleGetNextFlipnotes() {
+    console.log('batchHandle');
     const flipnoteResponses = users.map(async (user) => {
       const response = await fetch(BATCH_FLIPNOTE_URL(user.id), {
         method: 'POST',
@@ -45,6 +45,10 @@ export const useFlipnotes = (
     setFlipnotes((prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]);
   }
 
-  return { flipnotes, handleGetNextFlipnotes }
+  return {
+    flipnotes,
+    handleGetNextFlipnotes,
+    handleEmptyFlipnotes: () => setFlipnotes([])
+  }
 }
 

@@ -59,8 +59,6 @@ const UserProfile = async ({ params }: UserProfileProps) => {
 
   if (!user) throw new Error('Failed to load user');
 
-  console.log(user);
-
   return (
     <main className='w-full h-full px-16 pt-24'>
       <UserHeader userName={user.name} {...{ id, flipnoteCount }} />
