@@ -41,7 +41,7 @@ export async function getOrCreateFullUser(userId: string) {
 
     if (!user) {
       const scrapedUser = await scrapeUserPage(userId);
-      console.log('SU', scrapedUser);
+      console.log({ scrapedUser });
       user = await prisma.user.create({
         data: {
           id: scrapedUser.id,
