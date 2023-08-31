@@ -9,7 +9,6 @@ import frog from '@/assets/images/frog.webp';
 import person from '@/assets/images/person.svg';
 import star from '@/assets/images/star.svg';
 import question_mark from '@/assets/images/question-mark.svg';
-import { deserializeFavorites } from './_lib/deserializeLocalStorage';
 
 type FeedSelectorProps = {
   feedType: string;
@@ -24,9 +23,9 @@ const FeedSelector = ({
   userCount,
   favoriteCount,
 }: FeedSelectorProps) => {
-  const favorites = deserializeFavorites();
-  const favoritesPresent = 1 <= favorites.length;
+  const favoritesPresent = 1 <= favoriteCount;
 
+  // TODO: Break up render into multiple components
   return (
     <>
       <nav className='absolute flex items-center justify-center p-2 bg-gray-100 rounded-lg'>
@@ -35,7 +34,7 @@ const FeedSelector = ({
           switch (type) {
             case 'hatena':
               return (
-                <section className='relative'>
+                <section key={type} className='relative'>
                   <button
                     key={type}
                     id={`feed-${type}`}
@@ -61,7 +60,7 @@ const FeedSelector = ({
             case 'favorites': {
               if (!favoritesPresent) return;
               return (
-                <section className='relative'>
+                <section key={type} className='relative'>
                   <button
                     key={type}
                     id={`feed-${type}`}
@@ -98,7 +97,7 @@ const FeedSelector = ({
             }
             case 'random':
               return (
-                <section className='relative'>
+                <section key={type} className='relative'>
                   <button
                     key={type}
                     id={`feed-${type}`}
