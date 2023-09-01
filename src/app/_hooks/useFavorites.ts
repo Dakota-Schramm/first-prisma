@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
 import { storageAvailable } from '@/app/_lib/storageAvailable';
