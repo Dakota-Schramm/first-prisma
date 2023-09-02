@@ -17,6 +17,7 @@ type FeedSelectorProps = {
   favoriteCount: number;
 };
 
+// TODO: Fix rehydration issue with React 
 const FeedSelector = ({
   feedType,
   setFeedType,
