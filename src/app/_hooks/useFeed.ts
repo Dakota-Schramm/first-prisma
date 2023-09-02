@@ -20,12 +20,12 @@ export function useFeed() {
   const [feedData, setFeedData] = useState<FeedDataProps>({
     type: 'hatena',
     users: [],
-    userCount: 0,
-    favoriteCount: 0,
+    userCount: 0, // Total loaded users
+    favoriteCount: 0, // # of ids in favorites
     isLoaded: false,
   });
   const { users, type } = feedData;
-  const [ favorites, handleFavoritesChange ] = useFavorites()
+  const [ favorites, ] = useFavorites()
   const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(users);
 
   useEffect(() => {
@@ -75,8 +75,12 @@ export function useFeed() {
   }, [favorites]);
 
   useEffect(() => {
-    setFeedData((f) => ({ ...f, userCount: users.length }));
-  }, [users]);
+    async function getLoadedUserCount() {
+      const allUsers = await fetchDefaultFeed();
+      setFeedData((f) => ({ ...f, userCount: allUsers.length }));
+    } 
+    getLoadedUserCount()
+  }, []);
 
   return {
     flipnotes,
