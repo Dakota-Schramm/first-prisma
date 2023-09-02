@@ -26,9 +26,7 @@ export function useFeed() {
   });
   const { users, type } = feedData;
   const [ favorites, handleFavoritesChange ] = useFavorites()
-
-  const { flipnotes, handleGetNextFlipnotes, handleEmptyFlipnotes } =
-    useFlipnotes(users);
+  const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(users);
 
   useEffect(() => {
     log.debug({ type });
@@ -73,16 +71,11 @@ export function useFeed() {
   }, [type]);
 
   useEffect(() => {
-    if (favorites.length === 0) return
     setFeedData((f) => ({ ...f, favoriteCount: favorites.length, }));
   }, [favorites]);
 
   useEffect(() => {
-    log.debug({ users });
-    if (users.length === 0) return;
-    log.debug('hit');
-    handleEmptyFlipnotes();
-    handleGetNextFlipnotes();
+    setFeedData((f) => ({ ...f, userCount: users.length }));
   }, [users]);
 
   return {

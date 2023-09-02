@@ -6,8 +6,6 @@ import log from '../_utils/log';
 
 const BATCH_FLIPNOTE_URL = (id: string) => `/api/users/${id}/flipnotes`;
 
-// TODO: Create function that allows user to switch to different feed
-// and completely clear out current flipnotes
 export const useFlipnotes = (
   users: User[] = [],
 ) => {
@@ -46,10 +44,26 @@ export const useFlipnotes = (
     setFlipnotes((prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]);
   }
 
+  function handleEmptyFlipnotes() {
+    setFlipnotes([])
+  }
+
+  useEffect(() => {
+    handleGetNextFlipnotes();
+  }, []);
+
+  useEffect(() => {
+    if (users.length === 0) return;
+    setFlipnoteCursors(
+      Object.fromEntries(users.map((user) => [user.id, undefined]))
+    )
+    handleEmptyFlipnotes();
+    handleGetNextFlipnotes();
+  }, [users])
+
   return {
     flipnotes,
     handleGetNextFlipnotes,
-    handleEmptyFlipnotes: () => setFlipnotes([])
   }
 }
 
