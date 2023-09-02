@@ -6,6 +6,7 @@ import { User } from '@prisma/client';
 import { useFlipnotes } from '@/hooks/useFlipnotes';
 import log from '../_utils/log';
 import useFavorites from './useFavorites';
+import usePrevious from './usePrevious';
 
 export type FeedDataProps = {
   type: 'hatena' | 'favorites' | 'random';
@@ -24,13 +25,21 @@ export function useFeed() {
     favoriteCount: 0,
     isLoaded: false,
   });
-  const { users, type } = feedData;
+  const { users, type, isLoaded } = feedData;
   const [ favorites, handleFavoritesChange ] = useFavorites()
+  const prevFavorites = usePrevious(favorites)
 
   const { flipnotes, handleGetNextFlipnotes, handleEmptyFlipnotes } =
     useFlipnotes(users);
 
+  // TODO: Fix ->
+  // Double render is still occuring here
   useEffect(() => {
+    log.debug({ favorites, prevFavorites })
+    const favoritesShownAlready = favorites
+      .every((val, idx) => val === prevFavorites?.[idx])
+    if (isLoaded && favoritesShownAlready) return
+
     log.debug({ type });
 
     let users: User[] | undefined;
