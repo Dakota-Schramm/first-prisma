@@ -8,10 +8,7 @@ import log from '@/app/_utils/log';
 const prisma = new PrismaClient();
 
 async function main() {
-  const userRequests = userStudioIds.map(async (id) => {
-    const user = await upsertUser(id);
-    return user
-  })
+  const userRequests = userStudioIds.map(async (id) => await upsertUser(id))
   const users = await Promise.all(userRequests);
 
   log.debug(users);
