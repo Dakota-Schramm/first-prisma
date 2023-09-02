@@ -6,7 +6,6 @@ import { User } from '@prisma/client';
 import { useFlipnotes } from '@/hooks/useFlipnotes';
 import log from '../_utils/log';
 import useFavorites from './useFavorites';
-import usePrevious from './usePrevious';
 
 export type FeedDataProps = {
   type: 'hatena' | 'favorites' | 'random';
@@ -25,27 +24,15 @@ export function useFeed() {
     favoriteCount: 0,
     isLoaded: false,
   });
-  const { users, type, isLoaded } = feedData;
+  const { users, type } = feedData;
   const [ favorites, handleFavoritesChange ] = useFavorites()
-  const prevFavorites = usePrevious(favorites)
 
   const { flipnotes, handleGetNextFlipnotes, handleEmptyFlipnotes } =
     useFlipnotes(users);
 
-  // TODO: Fix ->
-  // Double render is still occuring here
   useEffect(() => {
-    log.debug({ favorites, prevFavorites })
-    const favoritesShownAlready = favorites
-      .every((val, idx) => val === prevFavorites?.[idx])
-    if (isLoaded && favoritesShownAlready) return
-
     log.debug({ type });
-
-    let users: User[] | undefined;
     async function fetchUsers() {
-      const allUsers = await fetchDefaultFeed();
-
       switch (type) {
         case 'favorites': {
           let favoriteUsers: User[] = []
@@ -55,7 +42,7 @@ export function useFeed() {
           setFeedData((f) => ({
             ...f,
             users: favoriteUsers,
-            userCount: allUsers.length,
+            isLoaded: true
           }));
           return;
         }
@@ -66,15 +53,16 @@ export function useFeed() {
           setFeedData((f) => ({
             ...f,
             users: selectedUsers,
-            userCount: allUsers.length,
+            isLoaded: true
           }));
           return;
         }
         case 'random': {
+          const allUsers = await fetchDefaultFeed();
           setFeedData((f) => ({
             ...f,
             users: allUsers,
-            userCount: allUsers.length,
+            isLoaded: true
           }));
           return;
         }
@@ -82,17 +70,12 @@ export function useFeed() {
       }
     }
     fetchUsers();
-  }, [type, favorites]);
+  }, [type]);
 
   useEffect(() => {
-    setFeedData((f) => ({ ...f, favoriteCount: favorites.length }));
-  }, [favorites])
-
-  useEffect(() => {
-    if (feedData.users && 0 < feedData.users?.length) {
-      setFeedData((f) => ({ ...f, isLoaded: true }));
-    }
-  }, [users]);
+    if (favorites.length === 0) return
+    setFeedData((f) => ({ ...f, favoriteCount: favorites.length, }));
+  }, [favorites]);
 
   useEffect(() => {
     log.debug({ users });
