@@ -29,14 +29,20 @@ export function useFeed() {
   const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(users);
 
   useEffect(() => {
-    log.debug({ type });
+    async function getLoadedUserCount() {
+      const allUsers = await fetchDefaultFeed();
+      setFeedData((f) => ({ ...f, userCount: allUsers.length }));
+    } 
+    getLoadedUserCount()
+  }, []);
+
+  useEffect(() => {
+    console.log({ type });
     async function fetchUsers() {
       switch (type) {
         case 'favorites': {
-          let favoriteUsers: User[] = []
-          if (favorites && 0 < favorites.length) {
-            favoriteUsers = await fetchFavorites(favorites);
-          }
+          if (!favorites || favorites.length === 0) return
+          const favoriteUsers = await fetchFavorites(favorites);
           setFeedData((f) => ({
             ...f,
             users: favoriteUsers,
@@ -68,19 +74,11 @@ export function useFeed() {
       }
     }
     fetchUsers();
-  }, [type]);
+  }, [type, favorites]);
 
   useEffect(() => {
     setFeedData((f) => ({ ...f, favoriteCount: favorites.length, }));
   }, [favorites]);
-
-  useEffect(() => {
-    async function getLoadedUserCount() {
-      const allUsers = await fetchDefaultFeed();
-      setFeedData((f) => ({ ...f, userCount: allUsers.length }));
-    } 
-    getLoadedUserCount()
-  }, []);
 
   return {
     flipnotes,
@@ -99,7 +97,7 @@ async function fetchDefaultFeed() {
   return data.users;
 }
 
-async function fetchFavorites(favorites: Pick<User, "id">[]) {
+async function fetchFavorites(favorites: User["id"][]) {
   const res = await fetch('/api/users/favorites', {
     method: 'POST',
     body: JSON.stringify({ data: favorites }),
