@@ -2,7 +2,8 @@
 
 import classNames from 'classnames';
 import Link from 'next/link'
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import React, { useEffect, useState, useContext, useRef, RefObject } from 'react';
+import { User, Flipnote } from '@prisma/client';
 
 import log from '@/app/_utils/log';
 import useWindowIntersection from '@/hooks/useWindowIntersection';
@@ -11,8 +12,13 @@ import frog from './frog.png';
 
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 
+type FlipnoteContentProps = {
+  flipnoteId: Flipnote["id"];
+  userId: User["id"];
+};
+
 // TODO: Fix error here where flipnotes don't lazy load
-const FlipnoteContent = ({ flipnoteId, userId }) => {
+const FlipnoteContent = ({ flipnoteId, userId }: FlipnoteContentProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
@@ -38,9 +44,9 @@ const FlipnoteContent = ({ flipnoteId, userId }) => {
 };
 
 type FlipnoteProps = {
-  id: string;
-  userId: string;
-  userName: string;
+  id: Flipnote["id"];
+  userId: User["id"];
+  userName: User["name"];
   isLast: boolean;
   handleGetNextFlipnotes: () => void;
 };
@@ -55,6 +61,7 @@ type FlipnoteProps = {
 // Doesn't stay on loading screen for full time
 // its loading -- instead, shows iframe with its own
 // respective loading animation
+// TODO: Fix onClick event not working for padding of summary
 const Flipnote = ({
   id,
   userId,
@@ -64,6 +71,12 @@ const Flipnote = ({
 }: FlipnoteProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [detailsRef, isVisible] = useWindowIntersection();
+
+  const handleDetailsSelection = (ref: RefObject<HTMLDetailsElement>) => {
+    console.log('HIT')
+    const node = ref.current
+    // if (node) node.doSomething()
+  }
 
   useEffect(() => {
     if (!isLast || !isVisible) return;
@@ -88,11 +101,14 @@ const Flipnote = ({
           { 'p-0': !isOpen },
           { 'p-4': isOpen }
         )}
+        onClick={() => handleDetailsSelection(detailsRef)}
       >
         Flipnote by{' '}
         <Link
           href={`/users/${userId}`}
-          className='underline hover:text-main-offline'
+          className={classNames(
+            'underline hover:text-main-offline'
+          )}
         >
           {userName}
         </Link>
@@ -104,12 +120,10 @@ const Flipnote = ({
 
 // TODO: Memoize?
 // TODO: Fix styling so that loading from is in bottom right
-const LoadScreen = () => {
-  return (
-    <div className='absolute bottom-2 right-2'>
-      <LoadingFrog image={frog} />
-    </div> 
-  )
-}
+const LoadScreen = () => (
+  <div className='absolute bottom-2 right-2'>
+    <LoadingFrog image={frog} />
+  </div> 
+)
 
 export default Flipnote
