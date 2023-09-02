@@ -38,16 +38,13 @@ const Portfolio = ({ user }: { user: User }) => {
   return (
     <>
       <section className='grid items-center justify-center grid-cols-3 gap-4 p-4'>
-        { flipnotes.map(
-          (f) => {
-            const { id } = f
-            return (
-              <Flipnote
-                key={id}
-                {...{ id }} 
-              /> 
-            )
-          }
+        {flipnotes.map(
+          ({ id }) => (
+            <Flipnote
+              key={id}
+              {...{ id }} 
+            /> 
+          )
         )}
       </section>
       <footer className='flex items-center justify-center w-full h-20'>

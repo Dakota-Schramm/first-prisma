@@ -36,10 +36,6 @@ export const BulletinBoard = () => {
     }, 1000 * 15);
   }, []);
 
-  useEffect(() => {
-    console.log({ UF: flipnotes });
-  }, [flipnotes]);
-
   return (
     <>
       <FeedSelector
