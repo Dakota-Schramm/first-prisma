@@ -39,39 +39,22 @@ export function useFeed() {
   useEffect(() => {
     console.log({ type });
     async function fetchUsers() {
-      switch (type) {
-        case 'favorites': {
-          if (!favorites || favorites.length === 0) return
-          const favoriteUsers = await fetchFavorites(favorites);
-          setFeedData((f) => ({
-            ...f,
-            users: favoriteUsers,
-            isLoaded: true
-          }));
-          return;
-        }
-        case 'hatena': {
-          const res = await fetch('/api/users/hatena');
-          const data = await res.json();
-          const selectedUsers = data.users;
-          setFeedData((f) => ({
-            ...f,
-            users: selectedUsers,
-            isLoaded: true
-          }));
-          return;
-        }
-        case 'random': {
-          const allUsers = await fetchDefaultFeed();
-          setFeedData((f) => ({
-            ...f,
-            users: allUsers,
-            isLoaded: true
-          }));
-          return;
-        }
-        default: throw new Error(`Invalid feed type: ${type}`);
-      }
+      let newUsers = [];
+      if (type === 'favorites') {
+        if (!favorites || favorites.length === 0) return
+        newUsers = await fetchFavorites(favorites);
+      } else if (type === 'hatena') {
+        const res = await fetch('/api/users/hatena');
+        const data = await res.json();
+        newUsers = data.users;
+      } else if (type === 'random') newUsers = await fetchDefaultFeed();
+      else throw new Error(`Invalid feed type: ${type}`);
+
+      setFeedData((f) => ({
+        ...f,
+        users: newUsers,
+        isLoaded: true
+      }));
     }
     fetchUsers();
   }, [type, favorites]);
