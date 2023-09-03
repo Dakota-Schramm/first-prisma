@@ -52,8 +52,8 @@ type UserProfileProps = {
 };
 
 type UserHeaderProps = {
-  id: string;
-  userName: string;
+  id: User['id'];
+  userName: User['name'];
   flipnoteCount: number;
   starCounts: StarCounts[];
 };

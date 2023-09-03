@@ -55,6 +55,7 @@ export const BulletinBoard = () => {
   const [hasBeenViewed, setHasBeenViewed] = useState(
     flipnotes.map((fId) => ({ [fId]: false }))
   );
+  // TODO: Move analytics to own hook
   const { analytics, setAnalytics } = useContext(AnalyticsContext);
 
   // TODO: Move to Bulletin-Boardn

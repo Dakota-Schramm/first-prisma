@@ -11,9 +11,11 @@ import log from './_utils/log';
 import AnalyticsProvider from './_contexts/analytics';
 
 export default function RootLayout({
+  modal,
   children,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const [analytics, setAnalytics] = useState({});
   const addUser = useRef<HTMLDialogElement>(null);
@@ -27,7 +29,8 @@ export default function RootLayout({
           </button>
         </Header>
         <AnalyticsProvider value={{ analytics, setAnalytics }}>
-          {children}
+          { children }
+          { modal }
         </AnalyticsProvider>
         <AddUser ref={addUser} handleClose={() => handleClose(addUser)} />
       </body>
