@@ -9,6 +9,7 @@ import plus from '@/assets/images/plus.svg';
 import AddUser from '@/components/dialogs/addUser';
 import log from './_utils/log';
 import AnalyticsProvider from './_contexts/analytics';
+import DialogProvider from './_contexts/dialog';
 
 export default function RootLayout({
   modal,
@@ -18,6 +19,7 @@ export default function RootLayout({
   modal: React.ReactNode;
 }) {
   const [analytics, setAnalytics] = useState({});
+  const [ dialogProps, setDialogProps ] = useState(null);
   const addUser = useRef<HTMLDialogElement>(null);
 
   return (
@@ -28,10 +30,12 @@ export default function RootLayout({
             <Image src={plus} alt='Plus' />
           </button>
         </Header>
-        <AnalyticsProvider value={{ analytics, setAnalytics }}>
-          { children }
-          { modal }
-        </AnalyticsProvider>
+        <DialogProvider value={{ dialogProps, setDialogProps }}>
+          <AnalyticsProvider value={{ analytics, setAnalytics }}>
+            { children }
+            { dialogProps !== null && modal }
+          </AnalyticsProvider>
+        </DialogProvider>
         <AddUser ref={addUser} handleClose={() => handleClose(addUser)} />
       </body>
     </html>

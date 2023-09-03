@@ -19,7 +19,7 @@ export function useFeed() {
   const [feedData, setFeedData] = useState<FeedDataProps>({
     type: 'hatena',
     users: [],
-    userCount: 0,
+    userCount: 0, // TODO: Move this out of state to calculate on server
     favoriteCount: 0,
     isLoaded: false,
   });

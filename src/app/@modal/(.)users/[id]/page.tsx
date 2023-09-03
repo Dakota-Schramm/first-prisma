@@ -1,14 +1,22 @@
-import { Dialog } from '@headlessui/react';
-import React, { useState } from 'react'
+'use client'
 
+import { DialogContext } from '@/app/_contexts/dialog';
 import { UserHeader, fetchProfile } from '@/app/users/[id]/page';
-import UserModal from './user-modal';
+import { Dialog } from '@headlessui/react';
+import React, { useContext, useState } from 'react'
 
-const UserModalPage = async ({ params }) => {
-  const { id } = params;
-  const { user, flipnoteCount } = await fetchProfile(id);
+const UserModalPage = () => {
+  const { dialogProps, setDialogProps } = useContext(DialogContext)
 
-  return <UserModal userName={user?.name} {...{id, flipnoteCount}} />
+  if (dialogProps === null) return null
+
+  return (
+    <Dialog isOpen={dialogProps !== null} onClose={() => setDialogProps(null)}>
+      <Dialog.Panel>
+        <UserHeader {...dialogProps} />
+      </Dialog.Panel>
+    </Dialog>
+  )
 }
 
-export default UserModalPage;
+export default UserModalPage

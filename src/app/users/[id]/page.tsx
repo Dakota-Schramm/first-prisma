@@ -51,7 +51,7 @@ type UserProfileProps = {
   params: { id: string };
 };
 
-type UserHeaderProps = {
+export type UserHeaderProps = {
   id: User['id'];
   userName: User['name'];
   flipnoteCount: number;
