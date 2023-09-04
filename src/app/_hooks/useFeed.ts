@@ -35,20 +35,18 @@ export function useFeed() {
 
     let users: User[] | undefined;
     async function fetchUsers() {
-      let favoriteUsers: User[] = []
-      if (favorites && 0 < favorites.length) {
-        favoriteUsers = await fetchFavorites(favorites);
-      }
-
       const allUsers = await fetchDefaultFeed();
 
       switch (type) {
         case 'favorites': {
+          let favoriteUsers: User[] = []
+          if (favorites && 0 < favorites.length) {
+            favoriteUsers = await fetchFavorites(favorites);
+          }
           setFeedData((f) => ({
             ...f,
             users: favoriteUsers,
             userCount: allUsers.length,
-            favoriteCount: favoriteUsers.length,
           }));
           return;
         }
@@ -60,7 +58,6 @@ export function useFeed() {
             ...f,
             users: selectedUsers,
             userCount: allUsers.length,
-            favoriteCount: favoriteUsers.length,
           }));
           return;
         }
@@ -69,16 +66,18 @@ export function useFeed() {
             ...f,
             users: allUsers,
             userCount: allUsers.length,
-            favoriteCount: favoriteUsers.length,
           }));
           return;
         }
-        default:
-          throw new Error(`Invalid feed type: ${type}`);
+        default: throw new Error(`Invalid feed type: ${type}`);
       }
     }
     fetchUsers();
   }, [type, favorites]);
+
+  useEffect(() => {
+    setFeedData((f) => ({ ...f, favoriteCount: favorites.length }));
+  }, [favorites])
 
   useEffect(() => {
     if (feedData.users && 0 < feedData.users?.length) {
