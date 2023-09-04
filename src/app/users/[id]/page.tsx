@@ -64,7 +64,7 @@ const UserHeader = ({
   flipnoteCount,
   starCounts,
 }: UserHeaderProps) => {
-  console.log(starCounts);
+  log.debug(starCounts);
   return (
     <header className='flex flex-col w-full border-4 border-solid rounded-lg border-gray-50'>
       <div className='flex items-start p-4 space-x-2 bg-main-online'>

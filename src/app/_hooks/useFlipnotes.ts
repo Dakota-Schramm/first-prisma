@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { User } from '@prisma/client'
+import log from '../_utils/log';
 
 const BATCH_FLIPNOTE_URL = (id: string) => `/api/users/${id}/flipnotes`;
 
@@ -23,7 +24,7 @@ export const useFlipnotes = (
   }
 
   async function handleGetNextFlipnotes() {
-    console.log('batchHandle');
+    log.info('batchHandle');
     const flipnoteResponses = users.map(async (user) => {
       const response = await fetch(BATCH_FLIPNOTE_URL(user.id), {
         method: 'POST',

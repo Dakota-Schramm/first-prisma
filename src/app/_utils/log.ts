@@ -14,22 +14,34 @@ const currentLogLevel = (process.env.NODE_ENV !== 'production')
 const log = {
   currentLevel: currentLogLevel,
   debug: (message?: any, ...optionalParams: any[]) => {
-    if (currentLogLevel <= LogLevel.DEBUG) console.debug(message, ...optionalParams)
+    if (currentLogLevel <= LogLevel.DEBUG) {
+      console.debug(`[${currentLogLevel}] `, message, ...optionalParams)
+    }
   },
   info: (message?: any, ...optionalParams: any[]) => {
-    if (currentLogLevel <= LogLevel.INFO) console.info(message, ...optionalParams)
+    if (currentLogLevel <= LogLevel.INFO) {
+      console.info(`[${currentLogLevel}] `, message, ...optionalParams)
+    }
   },
   warn: (message?: any, ...optionalParams: any[]) => {
-    if (currentLogLevel <= LogLevel.WARN) console.warn(message, ...optionalParams)
+    if (currentLogLevel <= LogLevel.WARN) {
+      console.warn(`[${currentLogLevel}] `, message, ...optionalParams)
+    }
   },
   error: (message?: any, ...optionalParams: any[]) => {
-    if (currentLogLevel <= LogLevel.ERROR) console.error(message, ...optionalParams)
+    if (currentLogLevel <= LogLevel.ERROR) {
+      console.error(`[${currentLogLevel}] `, message, ...optionalParams)
+    }
   },
   fatal: (message?: any, ...optionalParams: any[]) => {
-    if (currentLogLevel <= LogLevel.FATAL) console.error(message, ...optionalParams)
+    if (currentLogLevel <= LogLevel.FATAL) {
+      console.error(`[${currentLogLevel}] `, message, ...optionalParams)
+    }
   },
   unknown: (message?: any, ...optionalParams: any[]) => {
-    if (currentLogLevel <= LogLevel.UNKNOWN) console.log(message, ...optionalParams)
+    if (currentLogLevel <= LogLevel.UNKNOWN) {
+      console.log(`[${currentLogLevel}] `, message, ...optionalParams)
+    }
   },
 }
 

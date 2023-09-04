@@ -1,12 +1,13 @@
 'use client';
 
 import { storageAvailable } from '../_lib/storageAvailable';
+import log from '../_utils/log';
 
 // TODO: Move to useFavorites hook
 export function deserializeFavorites() {
   if (!storageAvailable('localStorage')) {
     // handle gracefully
-    console.error('Local storage not available');
+    log.error('Local storage not available');
     return [];
   }
 

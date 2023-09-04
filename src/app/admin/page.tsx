@@ -1,4 +1,5 @@
 import { prisma } from '@/app/api/db';
+import log from '../_utils/log';
 
 async function getData() {
   const allUsers = await prisma.user.findMany();
@@ -12,7 +13,7 @@ export default async function Home() {
     data = await getData();
   } catch (error) {
     // This will activate the closest `error.js` Error Boundary
-    console.error(error);
+    log.error(error);
     throw new Error('Failed to fetch data');
   } finally {
     await prisma.$disconnect();

@@ -1,4 +1,5 @@
 import { prisma } from '@/app/api/db';
+import log from '../_utils/log';
 
 // TODO: Add sorting based on star numbers
 async function getData() {
@@ -40,13 +41,13 @@ export default async function Home() {
     data = await getData();
   } catch (error) {
     // This will activate the closest `error.js` Error Boundary
-    console.error(error);
+    log.error(error);
     throw new Error('Failed to fetch data');
   } finally {
     await prisma.$disconnect();
   }
 
-  console.log(data);
+  log.debug(data);
   const { totalStarCount, totalFlipnoteCount, users } = data;
 
   return (
