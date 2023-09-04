@@ -26,13 +26,11 @@ export function useFeed() {
   });
   const { users, type } = feedData;
   const [ favorites, handleFavoritesChange ] = useFavorites()
-  const [ justChanged, setJustChanged ] = useState(false)
 
   const { flipnotes, handleGetNextFlipnotes, handleEmptyFlipnotes } =
     useFlipnotes(users);
 
   useEffect(() => {
-    if (justChanged) return
     log.debug({ type });
 
     let users: User[] | undefined;
@@ -80,14 +78,7 @@ export function useFeed() {
       }
     }
     fetchUsers();
-    setJustChanged(true)
   }, [type, favorites]);
-
-  useEffect(() => {
-    if (!justChanged) return
-    setJustChanged(false)
-  }, [justChanged])
-  
 
   useEffect(() => {
     if (feedData.users && 0 < feedData.users?.length) {

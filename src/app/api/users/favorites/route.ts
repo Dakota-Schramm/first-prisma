@@ -5,11 +5,13 @@ import log from '@/app/_utils/log';
 
 export const revalidate = 30;
 
-// Must pass request object here to prevent caching
-// https://nextjs.org/docs/app/building-your-application/routing/route-handlers#opting-out-of-caching
+// TODO: Fix this to just be an id instead of an object
 type PostedUser = {
   id: string;
 };
+
+// Must pass request object here to prevent caching
+// https://nextjs.org/docs/app/building-your-application/routing/route-handlers#opting-out-of-caching
 export async function POST(request: NextRequest) {
   const res = await request.json();
   const postedUsers: PostedUser[] = res.data;
