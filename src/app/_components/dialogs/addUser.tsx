@@ -22,33 +22,32 @@ const AddUser = forwardRef(
     props: AddUserProps,
     ref: RefObject<HTMLDialogElement>
   ) {
-    const {
-      handleClose
-    } = props
+    const { handleClose } = props
 
-  return (
-    <dialog ref={ref}
-      className='fixed w-screen h-screen text-white'
-      onCancel={handleClose}
-      onClose={handleClose}
-      onKeyDown={(e) => {
-        if (e.code !== 'Escape') return;
+    return (
+      <dialog ref={ref}
+        className='fixed w-screen h-screen text-white'
+        onCancel={handleClose}
+        onClose={handleClose}
+        onKeyDown={(e) => {
+          if (e.code !== 'Escape') return;
 
-        console.log('hit');
-        handleClose()
-      }}
-    >
-      <div className='top-0 flex items-center justify-center w-screen h-screen bg-main-online'>
-        <h2>Add user to feed: </h2>
-        {/* <br/> Is this okay to use? */}
+          console.log('hit');
+          handleClose()
+        }}
+      >
+        <div className='top-0 flex items-center justify-center w-screen h-screen bg-main-online'>
+          <h2>Add user to feed: </h2>
+          {/* <br/> Is this okay to use? */}
 
-        <footer>
-          <FooterButtons {...{ handleClose }} />
-        </footer>
-      </div>
-    </dialog>
-  );
-})
+          <footer>
+            <FooterButtons {...{ handleClose }} />
+          </footer>
+        </div>
+      </dialog>
+    );
+  }
+)
 
 const UserForm = ({ handleSubmitted }: { handleSubmitted: () => void }) => {
   const [ input, setInput ] = useState('')
