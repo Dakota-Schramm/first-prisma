@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { storageAvailable } from '@/app/_lib/storageAvailable';
 import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
+import log from '@/app/_utils/log';
 
 type AddUserButtonProps = {
   id: string;
@@ -43,7 +44,7 @@ function toggleUserFavorite(id: string) {
     favorites = favorites.filter((favId) => favId !== id);
   } else favorites.push(id);
 
-  console.log('favorites: ', favorites);
+  log.debug('favorites: ', favorites);
   localStorage.setItem('favorites', JSON.stringify({ data: favorites }));
 }
 

@@ -28,7 +28,7 @@ export const BulletinBoard = () => {
       if (!elemIsIframe) return;
       clearInterval(monitor);
       const [aUId, aFId] = elem.id.split('-');
-      console.log({ aUId, aFId });
+      log.info({ aUId, aFId });
       setHasBeenViewed((prev) => {
         return { ...{ [aFId]: true }, ...prev };
       });
@@ -59,7 +59,7 @@ export const BulletinBoard = () => {
 
 function handleAnalyticsUpdate(userId: string, flipnoteId: string, update) {
   update((prevUsers) => {
-    log(`Analytics updated for user ${userId}`);
+    log.info(`Analytics updated for user ${userId}`);
     let increment = 1;
 
     const isNewUser = !(userId in (prevUsers ?? {}));

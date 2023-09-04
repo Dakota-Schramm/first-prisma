@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { User, Flipnote } from '@prisma/client';
 
 import { prisma } from '@/app/api/db';
+import log from '@/app/_utils/log';
 
 const FLIPNOTES_TO_ADD = 3;
 
@@ -38,7 +39,7 @@ export async function POST(
 
     flipnotes = [...flipnotes, ...flipnotesToAdd.flat()];
   } catch (e) {
-    console.log(e);
+    log.error(e);
   } finally {
     await prisma.$disconnect();
   }

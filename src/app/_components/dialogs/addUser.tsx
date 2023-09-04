@@ -4,6 +4,7 @@ import React, { useState, forwardRef, RefObject } from 'react'
 import Image from 'next/image';
 
 import sync from "@/assets/images/sync.svg"
+import log from '@/app/_utils/log';
 
 type AddUserProps = {
   handleClose: () => void
@@ -32,7 +33,7 @@ const AddUser = forwardRef(
         onKeyDown={(e) => {
           if (e.code !== 'Escape') return;
 
-          console.log('hit');
+          log.debug('hit');
           handleClose()
         }}
       >

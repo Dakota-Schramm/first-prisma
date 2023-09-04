@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma, User } from '@prisma/client';
 import { prisma } from '@/app/api/db';
+import log from '@/app/_utils/log';
 
 export const revalidate = 30;
 
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     WHERE id IN (${Prisma.join(postedUsers)})
   `;
   } catch (e) {
-    console.log(e);
+    log.error(e);
   } finally {
     await prisma.$disconnect();
   }

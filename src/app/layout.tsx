@@ -39,12 +39,12 @@ function handleOpen(ref: RefObject<HTMLDialogElement>) {
   const node = ref.current!;
   if (node) {
     node.showModal();
-    log('Open: ', node.open);
+    log.debug('Open: ', node.open);
   }
 }
 
 function handleClose(ref: RefObject<HTMLDialogElement>) {
   const node = ref.current!;
-  log('closing');
+  log.debug('closing');
   if (node) node.close();
 }

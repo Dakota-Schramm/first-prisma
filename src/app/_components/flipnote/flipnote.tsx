@@ -24,7 +24,7 @@ const FlipnoteContent = ({ flipnoteId, userId }) => {
         id={`${userId}-${flipnoteId}`}
         onLoad={() => {
           setIsLoaded(true);
-          log(`Flipnote ${flipnoteId} loaded`);
+          log.info(`Flipnote ${flipnoteId} loaded`);
         }}
         loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
         allowFullScreen

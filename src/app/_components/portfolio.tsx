@@ -7,16 +7,15 @@ import { User } from '@prisma/client';
 import { useFlipnotes } from '@/app/_hooks/useFlipnotes';
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 import plus from '@/assets/images/plus.svg'
+import log from '../_utils/log';
 
 const Flipnote = ({ id }: { id: string }) => {
   return (
     <iframe
       key={id}
       src={`${BASE_URL}/${id}`}
-      // onLoad={() => {
-      //   setIsLoaded(true);
-      //   log(`Flipnote ${id} loaded`);
-      // }}
+      onLoad={() => log.info(`Flipnote ${id} loaded`)
+      }
       loading='lazy' // used to instruct the browser to defer loading of images/iframes that are off-screen until the user scrolls near them.
       allowFullScreen
       scrolling='no'

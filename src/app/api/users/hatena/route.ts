@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { Prisma, User } from '@prisma/client';
 import { prisma } from '@/app/api/db';
+
 import { userHatenaIds } from '@/app/_utils/constants';
+import log from '@/app/_utils/log';
 
 export async function GET() {
   let users: User[];
@@ -13,7 +15,7 @@ export async function GET() {
       WHERE id IN (${Prisma.join(userHatenaIds)})
     `;
   } catch (e) {
-    console.log(e);
+    log.error(e);
   } finally {
     await prisma.$disconnect();
   }

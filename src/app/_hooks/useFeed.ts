@@ -5,6 +5,7 @@ import { User } from '@prisma/client';
 
 import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
 import { useFlipnotes } from '@/hooks/useFlipnotes';
+import log from '../_utils/log';
 
 export type FeedDataProps = {
   type: 'hatena' | 'favorites' | 'random';
@@ -29,7 +30,7 @@ export function useFeed() {
     useFlipnotes(users);
 
   useEffect(() => {
-    console.log({ type });
+    log.debug({ type });
 
     let users: User[] | undefined;
     async function fetchUsers() {
@@ -81,9 +82,9 @@ export function useFeed() {
   }, [users]);
 
   useEffect(() => {
-    console.log({ users });
+    log.debug({ users });
     if (users.length === 0) return;
-    console.log('hit');
+    log.debug('hit');
     handleEmptyFlipnotes();
     handleGetNextFlipnotes();
   }, [users]);

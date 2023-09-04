@@ -1,8 +1,9 @@
 // @ts-ignore
 import { PrismaClient } from '@prisma/client';
 
-import { scrapeUserPage } from '../src/app/_lib/getFlipnoteIdsForUser';
+import { scrapeUserPage } from '@/app/api/users/[id]/puppeteer';
 import { userStudioIds } from '../src/app/_utils/constants';
+import log from '@/app/_utils/log';
 
 const prisma = new PrismaClient();
 
@@ -13,17 +14,17 @@ async function main() {
   })
   const users = await Promise.all(userRequests);
 
-  console.log(users);
+  log.debug(users);
 }
 
 main()
   .then(async () => {
-    console.log('Shutting down seed script...')
+    log.info('Shutting down seed script...')
     await prisma.$disconnect();
     process.exit()
   })
   .catch(async (e) => {
-    console.error(e);
+    log.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });

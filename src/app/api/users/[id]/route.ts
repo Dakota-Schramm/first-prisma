@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { prisma } from '@/app/api/db'; // Partial import to allow for seed script
 import { scrapeUserPage } from '@/app/api/users/[id]/puppeteer';
+import log from '@/app/_utils/log';
 
 export async function GET(
   request: NextRequest,
@@ -41,7 +42,7 @@ export async function getOrCreateFullUser(userId: string) {
 
     if (!user) {
       const scrapedUser = await scrapeUserPage(userId);
-      console.log({ scrapedUser });
+      log.debug({ scrapedUser });
       user = await prisma.user.create({
         data: {
           id: scrapedUser.id,
