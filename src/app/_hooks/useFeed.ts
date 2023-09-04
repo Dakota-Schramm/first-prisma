@@ -52,7 +52,7 @@ export function useFeed() {
   }, [type]);
 
   useEffect(() => {
-    if (type in ['hatena', 'random']) return
+    if (type === 'hatena' || type === 'random') return
     log.debug({ type });
     async function fetchUsers() {
       let newUsers = [];
