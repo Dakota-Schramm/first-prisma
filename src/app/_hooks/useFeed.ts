@@ -28,22 +28,14 @@ export function useFeed() {
   const [ favorites, ] = useFavorites()
   const { flipnotes, handleGetNextFlipnotes } = useFlipnotes(users);
 
-  useEffect(() => {
-    async function getLoadedUserCount() {
-      const allUsers = await fetchDefaultFeed();
-      setFeedData((f) => ({ ...f, userCount: allUsers.length }));
-    } 
-    getLoadedUserCount()
-  }, []);
+  // FEED USERS
 
   useEffect(() => {
+    if (type == 'favorites') return
     log.debug({ type });
     async function fetchUsers() {
       let newUsers = [];
-      if (type === 'favorites') {
-        if (!favorites || favorites.length === 0) return
-        newUsers = await fetchFavorites(favorites);
-      } else if (type === 'hatena') {
+      if (type === 'hatena') {
         const res = await fetch('/api/users/hatena');
         const data = await res.json();
         newUsers = data.users;
@@ -57,7 +49,39 @@ export function useFeed() {
       }));
     }
     fetchUsers();
+  }, [type]);
+
+  useEffect(() => {
+    if (type in ['hatena', 'random']) return
+    log.debug({ type });
+    async function fetchUsers() {
+      let newUsers = [];
+      if (type === 'favorites') {
+        if (!favorites || favorites.length === 0) return
+        newUsers = await fetchFavorites(favorites);
+        const data = await res.json();
+        newUsers = data.users;
+      }
+      else throw new Error(`Invalid feed type: ${type}`);
+
+      setFeedData((f) => ({
+        ...f,
+        users: newUsers,
+        isLoaded: true
+      }));
+    }
+    fetchUsers();
   }, [type, favorites]);
+
+  // FEED COUNTS
+
+  useEffect(() => {
+    async function getLoadedUserCount() {
+      const allUsers = await fetchDefaultFeed();
+      setFeedData((f) => ({ ...f, userCount: allUsers.length }));
+    } 
+    getLoadedUserCount()
+  }, []);
 
   useEffect(() => {
     setFeedData((f) => ({ ...f, favoriteCount: favorites.length, }));
