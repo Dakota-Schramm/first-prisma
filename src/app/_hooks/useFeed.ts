@@ -37,7 +37,7 @@ export function useFeed() {
   }, []);
 
   useEffect(() => {
-    console.log({ type });
+    log.debug({ type });
     async function fetchUsers() {
       let newUsers = [];
       if (type === 'favorites') {
