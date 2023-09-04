@@ -7,11 +7,12 @@ enum LogLevel {
   UNKNOWN
 }
 
-let currentLogLevel;
-if (process.env.NODE_ENV !== 'production') currentLogLevel = LogLevel.DEBUG;
-else currentLogLevel = LogLevel.WARN;
+const currentLogLevel = (process.env.NODE_ENV !== 'production')
+  ? LogLevel.DEBUG
+  : LogLevel.WARN
 
-const logHandlers = {
+const log = {
+  currentLevel: currentLogLevel,
   debug: (message?: any, ...optionalParams: any[]) => {
     if (currentLogLevel <= LogLevel.DEBUG) console.debug(message, ...optionalParams)
   },
@@ -32,4 +33,4 @@ const logHandlers = {
   },
 }
 
-export default logHandlers;
+export default log;
