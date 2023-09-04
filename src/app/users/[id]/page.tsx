@@ -103,7 +103,7 @@ const UserProfile = async ({ params }: UserProfileProps) => {
   const { user, flipnoteCount } = await fetchProfile(params.id);
   const { name, starCounts } = user;
 
-  log(user);
+  log.debug(user);
 
   return (
     <main className='w-full h-full px-16 pt-24'>

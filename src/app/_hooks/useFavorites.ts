@@ -5,6 +5,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { deserializeFavorites } from '@/app/_lib/deserializeLocalStorage';
 import { storageAvailable } from '@/app/_lib/storageAvailable';
 import { User } from '@prisma/client';
+import log from '../_utils/log';
 
 type FavoriteId = User['id']
 
@@ -31,7 +32,7 @@ function useFavorites(): [FavoriteId[], (id: FavoriteId) => void] {
       favorites = favorites.filter((favId) => favId !== id);
     } else favorites.push(id);
 
-    console.log('favorites: ', favorites);
+    log.debug('favorites: ', favorites);
     localStorage.setItem('favorites', JSON.stringify({ data: favorites }));
     setFavorites(favorites)
   }
@@ -46,7 +47,7 @@ function useFavorites(): [FavoriteId[], (id: FavoriteId) => void] {
       else throw new Error('Local storage not available')
     }
     const storageFavorites = deserializeFavorites();
-    console.log({ storageFavorites })
+    log.debug({ storageFavorites })
     setFavorites(storageFavorites)
   }, [isClient])
 
