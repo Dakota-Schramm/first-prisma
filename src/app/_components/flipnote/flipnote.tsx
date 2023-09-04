@@ -66,7 +66,7 @@ const Flipnote = ({
   const [detailsRef, isVisible] = useWindowIntersection();
 
   useEffect(() => {
-    if (!isVisible || !isLast) return;
+    if (!isLast || !isVisible) return;
     handleGetNextFlipnotes();
   }, [isVisible]);
 

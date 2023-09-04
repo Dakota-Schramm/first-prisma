@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, MutableRefObject } from 'react'
+
 
 const options = { 
   root: null, 
@@ -6,7 +7,7 @@ const options = {
   threshold: 1.0 
 }
 
-const useWindowIntersection = () => {
+const useWindowIntersection = (): [MutableRefObject<any>, boolean] => {
   const containerRef = useRef(null)
   const [ isVisible, setIsVisible ] = useState(false)
 
