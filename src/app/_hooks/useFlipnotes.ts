@@ -1,10 +1,34 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { User } from '@prisma/client'
+import { useState, useEffect, useCallback } from 'react'
+import { User, Flipnote } from '@prisma/client'
 import log from '../_utils/log';
 
 const BATCH_FLIPNOTE_URL = (id: string) => `/api/users/${id}/flipnotes`;
+
+async function fetchNextFlipnotes(flipnoteCursors: any) {
+  if (!Object.keys(flipnoteCursors).length) {
+    log.error('No flipnote cursors provided')
+    return []
+  }
+  log.info('batchHandle', flipnoteCursors);
+  const flipnoteRequests = Object.keys(flipnoteCursors).map(async (userId) => {
+    const response = await fetch(BATCH_FLIPNOTE_URL(userId), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cursor: flipnoteCursors[userId] }),
+    });
+
+    if (!response.ok) throw new Error('Could not fetch flipnotes');
+    return await response.json();
+  });
+
+  const flipnoteResponses = await Promise.all(flipnoteRequests);
+  log.debug({ flipnoteResponses })
+  return flipnoteResponses.map(r => ({
+    flipnotes: r.flipnotes,
+  }))
+}
 
 export const useFlipnotes = (
   users: User[] = [],
@@ -12,58 +36,45 @@ export const useFlipnotes = (
   // TODO: Change this to use DB
   // For function, will use getFlipnoteIdsForUser if 
   // user has not been populated into DB yet
-  const [ flipnotes, setFlipnotes ] = useState([])
-  const [flipnoteCursors, setFlipnoteCursors] = useState(
-    Object.fromEntries(users.map((user) => [user.id, undefined]))
-  );
+  const [ flipnotes, setFlipnotes ] = useState<Flipnote[]>([])
+  const INITIAL_CURSORS = Object.fromEntries(users.map((user) => [user.id, undefined]))
+  const [ flipnoteCursors, setFlipnoteCursors ] = useState<any>(INITIAL_CURSORS)
 
-  function handleUpdateCursor(cursor) {
-    setFlipnoteCursors((prevCursors) => ({ ...prevCursors, ...cursor }));
-  }
+  useEffect(() => {
+    log.debug('Running flipnote fetch...', flipnoteCursors); 
+  }, [flipnoteCursors])
 
-  async function handleGetNextFlipnotes() {
-    log.info('batchHandle');
-    const flipnoteResponses = users.map(async (user) => {
-      const response = await fetch(BATCH_FLIPNOTE_URL(user.id), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cursor: flipnoteCursors[user.id] }),
-      });
+  const handleGetNextFlipnotes = useCallback(async () => {
+    const flipnoteResponses = await fetchNextFlipnotes(flipnoteCursors)
+    log.debug({ flipnoteResponses })
+    const newFlipnotes = flipnoteResponses.map(({ flipnotes }) => flipnotes.flat());
+    setFlipnotes((prevFlipnotes) => [...prevFlipnotes, ...newFlipnotes]);
+    setFlipnoteCursors({ ...calculateFlipnoteCursors(newFlipnotes) })
+  }, [flipnoteCursors])
 
-      if (!response.ok) throw new Error('Could not fetch flipnotes');
-      const data = await response.json();
-
-      const { flipnotes: flipnotesToAdd, cursor } = data;
-
-      handleUpdateCursor({ [user.id]: cursor });
-      return flipnotesToAdd;
-    });
-
-    const flipnotes = await Promise.all(flipnoteResponses);
-
-    setFlipnotes((prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]);
-  }
-
-  function handleEmptyFlipnotes() {
+  const handleEmptyFlipnotes = useCallback(() => {
     setFlipnotes([])
-  }
-
-  useEffect(() => {
-    handleGetNextFlipnotes();
-  }, []);
-
-  useEffect(() => {
-    if (users.length === 0) return;
-    setFlipnoteCursors(
-      Object.fromEntries(users.map((user) => [user.id, undefined]))
-    )
-    handleEmptyFlipnotes();
-    handleGetNextFlipnotes();
-  }, [users])
+    setFlipnoteCursors(INITIAL_CURSORS)
+  }, [INITIAL_CURSORS])
 
   return {
     flipnotes,
     handleGetNextFlipnotes,
+    handleEmptyFlipnotes
   }
+}
+
+function calculateFlipnoteCursors(flipnotes) {
+  const flipnoteCursors = {};
+
+  flipnotes.forEach(f => {
+    const lastFlipnoteForUser = f.at(-1)
+    const { id, userId } = lastFlipnoteForUser
+    log.info()
+    flipnoteCursors[userId] = id
+  })
+
+  log.info('Generated flipnote cursors: ', flipnoteCursors)
+  return flipnoteCursors
 }
 
