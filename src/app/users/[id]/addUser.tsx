@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { User } from '@prisma/client';
+import React from 'react';
 
-import { storageAvailable } from '@/app/_lib/storageAvailable';
 import useFavorites from '@/app/_hooks/useFavorites';
 
 type AddUserButtonProps = {

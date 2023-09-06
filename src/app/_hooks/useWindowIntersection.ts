@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 
-
 const options = { 
   root: null, 
   // rootMargin: "Opx", 
