@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { User } from '@prisma/client';
 
 import { useFlipnotes } from '@/hooks/useFlipnotes';
@@ -20,86 +20,81 @@ export function useFeed() {
   const [feedData, setFeedData] = useState<FeedDataProps>({
     type: 'hatena',
     users: [],
-    userCount: 0,
-    favoriteCount: 0,
+    userCount: 0, // Total loaded users
+    favoriteCount: 0, // # of ids in favorites
     isLoaded: false,
   });
   const { users, type } = feedData;
-  const [ favorites, handleFavoritesChange ] = useFavorites()
+  const [ favorites, ] = useFavorites()
+  const { flipnotes, handleInitializeFeed, handleGetNextFlipnotes } = useFlipnotes(users);
 
-  const { flipnotes, handleGetNextFlipnotes, handleEmptyFlipnotes } =
-    useFlipnotes(users);
+  const handleFeedTypeChange = useCallback((type: FeedDataProps['type']) => {
+    setFeedData((prev) => ({ ...prev, type }))
+    handleInitializeFeed();
+  }, [handleInitializeFeed])
+
+  // FEED USERS
 
   useEffect(() => {
-    log.debug({ type });
-
-    let users: User[] | undefined;
+    if (type === 'favorites') return
+    log.debug(`Running ${type} fetch...`);
     async function fetchUsers() {
-      const allUsers = await fetchDefaultFeed();
+      let newUsers = [];
+      if (type === 'hatena') {
+        const res = await fetch('/api/users/hatena');
+        const data = await res.json();
+        newUsers = data.users;
+      } else if (type === 'random') newUsers = await fetchDefaultFeed();
+      else throw new Error(`Invalid feed type: ${type}`);
 
-      switch (type) {
-        case 'favorites': {
-          let favoriteUsers: User[] = []
-          if (favorites && 0 < favorites.length) {
-            favoriteUsers = await fetchFavorites(favorites);
-          }
-          setFeedData((f) => ({
-            ...f,
-            users: favoriteUsers,
-            userCount: allUsers.length,
-          }));
-          return;
-        }
-        case 'hatena': {
-          const res = await fetch('/api/users/hatena');
-          const data = await res.json();
-          const selectedUsers = data.users;
-          setFeedData((f) => ({
-            ...f,
-            users: selectedUsers,
-            userCount: allUsers.length,
-          }));
-          return;
-        }
-        case 'random': {
-          setFeedData((f) => ({
-            ...f,
-            users: allUsers,
-            userCount: allUsers.length,
-          }));
-          return;
-        }
-        default: throw new Error(`Invalid feed type: ${type}`);
+      setFeedData((f) => ({
+        ...f,
+        users: newUsers,
+        isLoaded: true
+      }));
+    }
+    fetchUsers();
+  }, [type]);
+
+  useEffect(() => {
+    if (type === 'hatena' || type === 'random') return
+    log.debug(`Running ${type} fetch...`);
+    async function fetchUsers() {
+      let newUsers = [];
+      if (type === 'favorites') {
+        if (!favorites || favorites.length === 0) return
+        newUsers = await fetchFavorites(favorites);
       }
+      else throw new Error(`Invalid feed type: ${type}`);
+
+      setFeedData((f) => ({
+        ...f,
+        users: newUsers,
+        isLoaded: true
+      }));
     }
     fetchUsers();
   }, [type, favorites]);
 
-  useEffect(() => {
-    setFeedData((f) => ({ ...f, favoriteCount: favorites.length }));
-  }, [favorites])
+  // FEED COUNTS
 
   useEffect(() => {
-    if (feedData.users && 0 < feedData.users?.length) {
-      setFeedData((f) => ({ ...f, isLoaded: true }));
-    }
-  }, [users]);
+    async function getLoadedUserCount() {
+      const allUsers = await fetchDefaultFeed();
+      setFeedData((f) => ({ ...f, userCount: allUsers.length }));
+    } 
+    getLoadedUserCount()
+  }, []);
 
   useEffect(() => {
-    log.debug({ users });
-    if (users.length === 0) return;
-    log.debug('hit');
-    handleEmptyFlipnotes();
-    handleGetNextFlipnotes();
-  }, [users]);
+    setFeedData((f) => ({ ...f, favoriteCount: favorites.length, }));
+  }, [favorites]);
 
   return {
     flipnotes,
     feedData,
     handleGetNextFlipnotes,
-    handleFeedTypeChange: (type: FeedDataProps['type']) => {
-      setFeedData((prev) => ({ ...prev, type }))
-    },
+    handleFeedTypeChange
   };
 }
 
@@ -110,7 +105,7 @@ async function fetchDefaultFeed() {
   return data.users;
 }
 
-async function fetchFavorites(favorites: Pick<User, "id">[]) {
+async function fetchFavorites(favorites: User["id"][]) {
   const res = await fetch('/api/users/favorites', {
     method: 'POST',
     body: JSON.stringify({ data: favorites }),

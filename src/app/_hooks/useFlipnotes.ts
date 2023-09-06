@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { User } from '@prisma/client'
 import log from '../_utils/log';
 
@@ -23,13 +23,13 @@ export const useFlipnotes = (
     setFlipnoteCursors((prevCursors) => ({ ...prevCursors, ...cursor }));
   }
 
-  async function handleGetNextFlipnotes() {
+  const handleGetNextFlipnotes = useCallback(async () => {
     log.info('batchHandle');
-    const flipnoteResponses = users.map(async (user) => {
-      const response = await fetch(BATCH_FLIPNOTE_URL(user.id), {
+    const flipnoteResponses = Object.keys(flipnoteCursors).map(async (userId) => {
+      const response = await fetch(BATCH_FLIPNOTE_URL(userId), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cursor: flipnoteCursors[user.id] }),
+        body: JSON.stringify({ cursor: flipnoteCursors[userId] }),
       });
 
       if (!response.ok) throw new Error('Could not fetch flipnotes');
@@ -37,19 +37,31 @@ export const useFlipnotes = (
 
       const { flipnotes: flipnotesToAdd, cursor } = data;
 
-      handleUpdateCursor({ [user.id]: cursor });
+      handleUpdateCursor({ [userId]: cursor });
       return flipnotesToAdd;
     });
 
     const flipnotes = await Promise.all(flipnoteResponses);
 
     setFlipnotes((prevFlipnotes) => [...prevFlipnotes, ...flipnotes.flat()]);
-  }
+  }, [flipnoteCursors])
+
+  const handleInitializeFeed = useCallback(() => { 
+    setFlipnotes([])
+    setFlipnoteCursors(prevCursors => {
+      const newCursors = {...prevCursors}
+      const keys = Object.keys(prevCursors)
+      keys.forEach(k => newCursors[k] = undefined)
+
+      return newCursors
+    })
+    handleGetNextFlipnotes()
+  }, [handleGetNextFlipnotes])
 
   return {
     flipnotes,
     handleGetNextFlipnotes,
-    handleEmptyFlipnotes: () => setFlipnotes([])
+    handleInitializeFeed
   }
 }
 

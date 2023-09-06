@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { User } from '@prisma/client';
 
 import { AnalyticsContext } from '@/app/_contexts/analytics';
@@ -10,8 +10,12 @@ import useFeed from '@/hooks/useFeed';
 import log from '@/app/_utils/log';
 
 export const BulletinBoard = () => {
-  const { flipnotes, feedData, handleGetNextFlipnotes, handleFeedTypeChange } =
-    useFeed();
+  const {
+    flipnotes,
+    feedData,
+    handleGetNextFlipnotes,
+    handleFeedTypeChange,
+  } = useFeed();
   const { type, users, userCount, favoriteCount } = feedData;
 
   const [hasBeenViewed, setHasBeenViewed] = useState(
@@ -36,6 +40,7 @@ export const BulletinBoard = () => {
     }, 1000 * 15);
   }, []);
 
+  
   return (
     <>
       <FeedSelector
