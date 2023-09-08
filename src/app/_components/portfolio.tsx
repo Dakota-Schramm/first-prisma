@@ -27,10 +27,14 @@ const Flipnote = ({ id }: { id: string }) => {
 }
 
 const Portfolio = ({ user }: { user: User }) => {
-  const { flipnotes, handleInitializeFeed, handleGetNextFlipnotes } = useFlipnotes([user])
+  const {
+    flipnotes,
+    flipnoteCursors,
+    handleGetNextFlipnotes
+  } = useFlipnotes([user])
 
   useEffect(() => {
-    handleInitializeFeed();
+    console.log('onMount')
   }, []);
 
   // TODO: Remove margin from element in last column
@@ -47,7 +51,7 @@ const Portfolio = ({ user }: { user: User }) => {
         )}
       </section>
       <footer className='flex items-center justify-center w-full h-20'>
-        <button onClick={handleGetNextFlipnotes}>
+        <button onClick={async () => await handleGetNextFlipnotes(flipnoteCursors)}>
           <Image src={plus} alt='Expand flipnotes' />
         </button>
       </footer>

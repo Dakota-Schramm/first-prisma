@@ -26,12 +26,12 @@ export function useFeed() {
   });
   const { users, type } = feedData;
   const [ favorites, ] = useFavorites()
-  const { flipnotes, handleInitializeFeed, handleGetNextFlipnotes } = useFlipnotes(users);
-
-  const handleFeedTypeChange = useCallback((type: FeedDataProps['type']) => {
-    setFeedData((prev) => ({ ...prev, type }))
-    handleInitializeFeed();
-  }, [handleInitializeFeed])
+  const {
+    flipnotes,
+    setFlipnotes,
+    flipnoteCursors,
+    handleGetNextFlipnotes
+  } = useFlipnotes(users);
 
   // FEED USERS
 
@@ -94,7 +94,10 @@ export function useFeed() {
     flipnotes,
     feedData,
     handleGetNextFlipnotes,
-    handleFeedTypeChange
+    handleFeedTypeChange: (type: FeedDataProps['type']) => {
+      setFeedData((prev) => ({ ...prev, type }))
+      setFlipnotes([]);
+    }
   };
 }
 

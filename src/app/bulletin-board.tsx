@@ -6,22 +6,24 @@ import { User } from '@prisma/client';
 import { AnalyticsContext } from '@/app/_contexts/analytics';
 import { Flipnote } from '@/app/_components/flipnote';
 import FeedSelector from './feed-selector';
-import useFeed from '@/hooks/useFeed';
 import log from '@/app/_utils/log';
+import useFeed from '@/hooks/useFeed';
+import { useFlipnotes } from '@/hooks/useFlipnotes';
 
 export const BulletinBoard = () => {
-  const {
-    flipnotes,
-    feedData,
-    handleGetNextFlipnotes,
-    handleFeedTypeChange,
-  } = useFeed();
+  const { feedData, handleFeedTypeChange } = useFeed();
   const { type, users, userCount, favoriteCount } = feedData;
+  const { flipnotes, setFlipnotes, flipnoteCursors, handleGetNextFlipnotes } = useFlipnotes(users);
 
   const [hasBeenViewed, setHasBeenViewed] = useState(
     flipnotes.map((fId) => ({ [fId]: false }))
   );
   const { analytics, setAnalytics } = useContext(AnalyticsContext);
+
+  useEffect(() => {
+    console.log("U", { users })
+  }, [users])
+  
 
   // TODO: Move to Bulletin-Boardn
   useEffect(() => {
@@ -40,12 +42,15 @@ export const BulletinBoard = () => {
     }, 1000 * 15);
   }, []);
 
-  
   return (
     <>
       <FeedSelector
         feedType={type}
-        setFeedType={(t) => handleFeedTypeChange(t)}
+        setFeedType={(t) => {
+          handleFeedTypeChange(t)
+          setFlipnotes([])
+          handleGetNextFlipnotes(flipnoteCursors)
+        }}
         {...{ userCount, favoriteCount }}
       />
       <section className='flex flex-col items-center justify-between min-h-screen p-24'>
@@ -54,7 +59,8 @@ export const BulletinBoard = () => {
             key={id}
             isLast={idx === flipnotes.length - 1}
             userName={getUserName(users, userId)}
-            {...{ id, userId, handleGetNextFlipnotes }}
+            handleGetNextFlipnotes={() => handleGetNextFlipnotes(flipnoteCursors)}
+            {...{ id, userId }}
           />
         ))}
       </section>
