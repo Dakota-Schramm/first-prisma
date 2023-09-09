@@ -1,13 +1,16 @@
 'use client'
 
 import Image from 'next/image';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import useSWR from 'swr';
 import { User } from '@prisma/client';
 
 import { useFlipnotes } from '@/app/_hooks/useFlipnotes';
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 import plus from '@/assets/images/plus.svg'
 import log from '../_utils/log';
+import { fetcher } from '../_utils/fetcher';
+import useSWRInfinite from 'swr/infinite';
 
 const Flipnote = ({ id }: { id: string }) => {
   return (
@@ -27,11 +30,29 @@ const Flipnote = ({ id }: { id: string }) => {
 }
 
 const Portfolio = ({ user }: { user: User }) => {
-  const { flipnotes, handleGetNextFlipnotes } = useFlipnotes([user])
+  // const { flipnotes, handleGetNextFlipnotes } = useFlipnotes([user])
+  const BATCH_FLIPNOTE_URL = `/api/users/${user.id}/flipnotes`;
+  const getKey = (pageIndex, previousPageData) => {
+    console.log('hit', pageIndex, previousPageData)
+    // reached the end
+    if (previousPageData && !previousPageData.flipnotes) return null
 
-  useEffect(() => {
-    handleGetNextFlipnotes();
-  }, []);
+    // first page, we don't have `previousPageData`
+    if (pageIndex === 0) return BATCH_FLIPNOTE_URL
+
+    console.log("pPD", previousPageData)
+    // add the cursor to the API endpoint
+    return `${BATCH_FLIPNOTE_URL}?cursor=${previousPageData.cursor}`
+  }
+  const { data, size, setSize } = useSWRInfinite(getKey, fetcher)
+
+  if (!data) return <div>Loading...</div>
+
+  const flipnotes = data
+    ?.map(response => response?.flipnotes).flat()
+    ?? []
+
+  console.log(data, flipnotes)
 
   // TODO: Remove margin from element in last column
   return (
@@ -47,7 +68,7 @@ const Portfolio = ({ user }: { user: User }) => {
         )}
       </section>
       <footer className='flex items-center justify-center w-full h-20'>
-        <button onClick={handleGetNextFlipnotes}>
+        <button onClick={() => setSize(s => s+1)}>
           <Image src={plus} alt='Expand flipnotes' />
         </button>
       </footer>

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { User, Flipnote } from '@prisma/client';
 
 import { prisma } from '@/app/api/db';
@@ -13,15 +13,17 @@ type FlipnoteCursors = {
 };
 
 // GETs next batch of flipnotes using cursor-based pagination
-export async function POST(
-  request: Request,
+// TODO:
+// Add query params for number to return
+export async function GET(
+  request: NextRequest,
   { params: { id } }: { params: { id: string } }
 ) {
   if (id.length !== 16) return NextResponse.error();
 
   let user: User;
   let flipnotes: Flipnote[] = [];
-  let { cursor } = await request.json();
+  let cursor = request.nextUrl.searchParams.get('cursor') ?? undefined;
 
   try {
     user = await prisma.user.findUnique({ where: { id } });
@@ -30,12 +32,12 @@ export async function POST(
 
     const flipnotesToAdd = await prisma.flipnote.findMany({
       where: { userId: user.id },
-      skip: 1,
+      skip: cursor ? 1 : 0,
       take: FLIPNOTES_TO_ADD,
       cursor: cursor ? { id: cursor } : undefined,
     });
 
-    cursor = flipnotesToAdd[flipnotesToAdd.length - 1].id;
+    cursor = flipnotesToAdd.at(-1)?.id;
 
     flipnotes = [...flipnotes, ...flipnotesToAdd.flat()];
   } catch (e) {
