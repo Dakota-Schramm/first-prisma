@@ -1,7 +1,6 @@
 'use client'
 
 import classNames from 'classnames';
-import Link from 'next/link'
 import React, { useEffect, useState, useContext, useRef } from 'react';
 
 import log from '@/app/_utils/log';
@@ -10,9 +9,16 @@ import LoadingFrog from '../loading-frog';
 import frog from './frog.png';
 
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
+import UserTitle from '../userTitle';
+import { Flipnote, User } from '@prisma/client';
+
+type FlipnoteContentProps = {
+  flipnoteId: Flipnote['id'];
+  userId: User['id'];
+};
 
 // TODO: Fix error here where flipnotes don't lazy load
-const FlipnoteContent = ({ flipnoteId, userId }) => {
+const FlipnoteContent = ({ flipnoteId, userId }: FlipnoteContentProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
@@ -90,13 +96,8 @@ const Flipnote = ({
         )}
       >
         Flipnote by{' '}
-        <Link
-          href={`/users/${userId}`}
-          className='underline hover:text-main-offline'
-        >
-          {userName}
-        </Link>
       </summary>
+      <UserTitle id={userId} name={userName} />
       <FlipnoteContent flipnoteId={id} {...{ userId }} />
     </details>
   );
