@@ -66,7 +66,7 @@ const FeedSelector = ({
                     id={`feed-${type}`}
                     className={classNames(
                       'relative z-10',
-                      'after:w-fit after:h-3 after:bg-red-500 after:absolute after:top-0 after:right-0 after:rounded-lg after:text-white after:text-xs after:leading-3'
+                      'after:w-fit after:h-3 after:bg-red-500 after:absolute after:top-0 after:right-0 after:rounded-full after:text-white after:text-xs after:leading-3 after:justify-center after:items-center after:flex after:flex after:p-1'
                     )}
                     onClick={() => setFeedType(type)}
                   >
@@ -103,7 +103,7 @@ const FeedSelector = ({
                     id={`feed-${type}`}
                     className={classNames(
                       'relative z-10',
-                      'after:w-fit after:h-3 after:bg-red-500 after:absolute after:top-0 after:right-0 after:rounded-lg after:text-white after:text-xs after:leading-3'
+                      'after:w-fit after:h-3 after:bg-red-500 after:absolute after:top-0 after:right-0 after:rounded-full after:text-white after:text-xs after:leading-3 after:justify-center after:items-center after:flex after:flex after:p-1'
                     )}
                     onClick={() => setFeedType(type)}
                   >
