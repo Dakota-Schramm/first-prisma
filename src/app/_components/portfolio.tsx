@@ -2,15 +2,14 @@
 
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
-import useSWR from 'swr';
 import { User } from '@prisma/client';
+import useSWRInfinite from 'swr/infinite';
 
 import { useFlipnotes } from '@/app/_hooks/useFlipnotes';
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 import plus from '@/assets/images/plus.svg'
 import log from '../_utils/log';
 import { fetcher } from '../_utils/fetcher';
-import useSWRInfinite from 'swr/infinite';
 
 const Flipnote = ({ id }: { id: string }) => {
   return (
@@ -33,14 +32,13 @@ const Portfolio = ({ user }: { user: User }) => {
   // const { flipnotes, handleGetNextFlipnotes } = useFlipnotes([user])
   const BATCH_FLIPNOTE_URL = `/api/users/${user.id}/flipnotes`;
   const getKey = (pageIndex, previousPageData) => {
-    console.log('hit', pageIndex, previousPageData)
+    console.log({ pageIndex, previousPageData })
     // reached the end
     if (previousPageData && !previousPageData.flipnotes) return null
 
     // first page, we don't have `previousPageData`
     if (pageIndex === 0) return BATCH_FLIPNOTE_URL
 
-    console.log("pPD", previousPageData)
     // add the cursor to the API endpoint
     return `${BATCH_FLIPNOTE_URL}?cursor=${previousPageData.cursor}`
   }
@@ -52,7 +50,7 @@ const Portfolio = ({ user }: { user: User }) => {
     ?.map(response => response?.flipnotes).flat()
     ?? []
 
-  console.log(data, flipnotes)
+  console.log({ data, flipnotes })
 
   // TODO: Remove margin from element in last column
   return (
