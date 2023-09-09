@@ -23,7 +23,6 @@ export const BulletinBoard = () => {
   const { feedData, handleFeedTypeChange } = useFeed();
   const { type, users, userCount, favoriteCount } = feedData;
   const getKey = (pageIndex, previousPageData) => {
-    console.log({ pageIndex, previousPageData })
     // reached the end
     if (previousPageData && !previousPageData.at(-1).flipnotes) return null
 
@@ -76,8 +75,6 @@ export const BulletinBoard = () => {
     }, 1000 * 15);
   }, []);
 
-
-  console.log({ data, size, flipnotes })
 
   return (
     <>

@@ -32,7 +32,6 @@ const Portfolio = ({ user }: { user: User }) => {
   // const { flipnotes, handleGetNextFlipnotes } = useFlipnotes([user])
   const BATCH_FLIPNOTE_URL = `/api/users/${user.id}/flipnotes`;
   const getKey = (pageIndex, previousPageData) => {
-    console.log({ pageIndex, previousPageData })
     // reached the end
     if (previousPageData && !previousPageData.flipnotes) return null
 
@@ -49,8 +48,6 @@ const Portfolio = ({ user }: { user: User }) => {
   const flipnotes = data
     ?.map(response => response?.flipnotes).flat()
     ?? []
-
-  console.log({ data, flipnotes })
 
   // TODO: Remove margin from element in last column
   return (
