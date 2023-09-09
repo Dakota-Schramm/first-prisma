@@ -1,11 +1,10 @@
 'use client'
 
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { User } from '@prisma/client';
 import useSWRInfinite from 'swr/infinite';
 
-import { useFlipnotes } from '@/app/_hooks/useFlipnotes';
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 import plus from '@/assets/images/plus.svg'
 import log from '../_utils/log';

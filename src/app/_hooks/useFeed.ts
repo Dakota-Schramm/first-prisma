@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { User } from '@prisma/client';
 
-import { useFlipnotes } from '@/hooks/useFlipnotes';
 import log from '../_utils/log';
 import useFavorites from './useFavorites';
 

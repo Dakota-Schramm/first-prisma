@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useContext } from 'react';
 import { User } from '@prisma/client';
-import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 
 import { AnalyticsContext } from '@/app/_contexts/analytics';
