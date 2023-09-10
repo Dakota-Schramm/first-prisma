@@ -31,7 +31,7 @@ const FlipnoteContent = ({ flipnoteId, userId }) => {
         scrolling='no'
         frameBorder={0}
         height={429}
-        width={512}
+        // width={512}
       />
     </div>
   );
@@ -76,7 +76,7 @@ const Flipnote = ({
     <details
       ref={detailsRef}
       className={classNames(
-        'my-4 text-black bg-white border border-black border-solid w-[512px] h-full flex flex-col items-center justify-center',
+        'my-4 text-black bg-white border border-black border-solid w-[300px] lg:w-[512px] h-full flex flex-col items-center justify-center',
         { 'p-0': isOpen },
         { 'p-4': !isOpen }
       )}
