@@ -3,12 +3,11 @@
 import Image from 'next/image';
 import React from 'react'
 import { User } from '@prisma/client';
-import useSWRInfinite from 'swr/infinite';
 
 import { IFRAME_BASE_URL as BASE_URL } from '@/app/_utils/constants';
 import plus from '@/assets/images/plus.svg'
 import log from '../_utils/log';
-import { fetcher } from '../_utils/fetcher';
+import { useFlipnotes } from '../_hooks';
 
 const Flipnote = ({ id }: { id: string }) => {
   return (
@@ -28,46 +27,29 @@ const Flipnote = ({ id }: { id: string }) => {
 }
 
 const Portfolio = ({ user }: { user: User }) => {
-  // const { flipnotes, handleGetNextFlipnotes } = useFlipnotes([user])
-  const BATCH_FLIPNOTE_URL = `/api/users/${user.id}/flipnotes`;
-  const getKey = (pageIndex, previousPageData) => {
-    // reached the end
-    if (previousPageData && !previousPageData.flipnotes) return null
+  const { flipnotes, handleGetNextFlipnotes } = useFlipnotes([user])
 
-    // first page, we don't have `previousPageData`
-    if (pageIndex === 0) return BATCH_FLIPNOTE_URL
-
-    // add the cursor to the API endpoint
-    return `${BATCH_FLIPNOTE_URL}?cursor=${previousPageData.cursor}`
-  }
-  const { data, size, setSize } = useSWRInfinite(getKey, fetcher)
-
-  if (!data) return <div>Loading...</div>
-
-  const flipnotes = data
-    ?.map(response => response?.flipnotes).flat()
-    ?? []
+  if (!flipnotes || flipnotes.length === 0) return <div>Loading...</div>
 
   // TODO: Remove margin from element in last column
-  return (
-    <>
-      <section className='grid items-center justify-center grid-cols-3 gap-4 p-4'>
-        {flipnotes.map(
-          ({ id }) => (
-            <Flipnote
-              key={id}
-              {...{ id }} 
-            /> 
-          )
-        )}
-      </section>
-      <footer className='flex items-center justify-center w-full h-20'>
-        <button onClick={() => setSize(s => s+1)}>
-          <Image src={plus} alt='Expand flipnotes' />
-        </button>
-      </footer>
-    </>
-  )
+  // TODO: Use container to resize flipnotes at certain screen sizes
+  return <>
+    <section className='grid items-center justify-center grid-cols-3 gap-4 p-4'>
+      {flipnotes.map(
+        ({ id }) => (
+          <Flipnote
+            key={id}
+            {...{ id }} 
+          /> 
+        )
+      )}
+    </section>
+    <footer className='flex items-center justify-center w-full h-20'>
+      <button onClick={handleGetNextFlipnotes}>
+        <Image src={plus} alt='Expand flipnotes' />
+      </button>
+    </footer>
+  </>
 }
 
 export default Portfolio
