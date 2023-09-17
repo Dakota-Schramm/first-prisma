@@ -20,7 +20,7 @@ export default function RootLayout({
 
   return (
     <html lang='en'>
-      <body className='bg-main-online'>
+      <body className='box-border bg-main-online'>
         <Header>
           <button onClick={() => handleOpen(addUser)}>
             <Image src={plus} alt='Plus' />
