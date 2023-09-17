@@ -4,9 +4,7 @@ import { User } from '@prisma/client';
 
 import { Flipnote } from '@/app/_components/flipnote';
 import FeedSelector from './feed-selector';
-import useFeed from '@/hooks/useFeed';
-import { useAnalytics } from './_hooks/useAnalytics';
-import { useFlipnotes } from './_hooks/useFlipnotes';
+import { useFeed, useAnalytics, useFlipnotes } from '@/hooks/index';
 
 export const BulletinBoard = () => {
   const { feedData, handleFeedTypeChange } = useFeed();
