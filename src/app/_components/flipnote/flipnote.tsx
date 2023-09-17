@@ -63,6 +63,7 @@ const Flipnote = ({
   handleGetNextFlipnotes,
 }: FlipnoteProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [detailsRef, isVisible] = useWindowIntersection();
 
   useEffect(() => {
@@ -80,7 +81,10 @@ const Flipnote = ({
         { 'p-4': !isOpen }
       )}
       open={isOpen}
-      onToggle={() => setIsOpen(!isOpen)}
+      onToggle={() => {
+        setIsOpen(!isOpen)
+        if (!initialLoadComplete) setInitialLoadComplete(true);
+      }}
     >
       <summary
         className={classNames(
@@ -97,7 +101,7 @@ const Flipnote = ({
           {userName}
         </Link>
       </summary>
-      {isOpen && <FlipnoteContent flipnoteId={id} {...{ userId }} />}
+      {initialLoadComplete && <FlipnoteContent flipnoteId={id} {...{ userId }} />}
     </details>
   );
 };
