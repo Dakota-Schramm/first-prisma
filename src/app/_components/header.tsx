@@ -7,7 +7,7 @@ const Header = (
   return (
     <header className='fixed top-0 z-50 flex items-center justify-between w-full h-20 px-4 text-black bg-white'>
       <div className='flex items-center justify-end space-x-2'>
-        <h1 className='text-xl font-bold font-pop text-main-offline'>
+        <h1 className='text-base font-bold lg:text-xl font-pop text-main-offline'>
           <Link href="/">Flipnote -- Legacy Viewer</Link>
         </h1>
         {links}
